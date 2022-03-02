@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# Copyright 2021 Harness Inc. All rights reserved.
+# Use of this source code is governed by the PolyForm Free Trial 1.0.0 license
+# that can be found in the licenses directory at the root of this repository, also available at
+# https://polyformproject.org/wp-content/uploads/2020/05/PolyForm-Free-Trial-1.0.0.txt.
+
+set -ex
+
+# GCP_KEY, HARNESS_WILD_CERT, KEYSTORE_PASS, JDK, VERSION, PURPOSE are externally provided
+# to this script through environment variables.
+
+echo $GCP_KEY | base64 -d > /tmp/storage_secret.json
+export GCP_KEY="/tmp/storage_secret.json"
+
+echo $HARNESS_WILD_CERT | base64 -d > /tmp/harness_wild.p12
+export KEY_STORE="/tmp/harness_wild.p12"
+export KEY_STORE_PASSWORD=$KEYSTORE_PASS
+
+export GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+export IMAGE_TAG=$VERSION-$GIT_BRANCH
+export GIT_COMMIT=$(git rev-parse HEAD)
+
+echo "--------------------------------------"
+echo $JDK $VERSION $PURPOSE $GIT_BRANCH $IMAGE_TAG $GIT_COMMIT $(date)
+echo "--------------------------------------"
+
+yum install zlib-devel -y
+
+chmod +x scripts/bazel/UpdateVersionInfoyaml.sh
+scripts/bazel/UpdateVersionInfoyaml.sh $VERSION access-control/config/build.properties
+
+access-control/build/build_jar.sh
+access-control/build/build_dist.sh || true
+
+echo "INFO: list the jars built"
+find . -name "*.jar"
