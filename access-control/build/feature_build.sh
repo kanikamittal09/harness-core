@@ -27,8 +27,10 @@ echo "--------------------------------------"
 yum install zlib-devel -y
 
 chmod +x scripts/bazel/UpdateVersionInfoyaml.sh
-scripts/bazel/UpdateVersionInfoyaml.sh $VERSION access-control/config/build.properties
+chmod +x access-control/build/build_jar.sh
+chmod +x access-control/build/build_dist.sh
 
+scripts/bazel/UpdateVersionInfoyaml.sh $VERSION access-control/config/build.properties
 access-control/build/build_jar.sh
 access-control/build/build_dist.sh || true
 
