@@ -21,11 +21,14 @@ public class FullyQualifiedIdentifierHelper {
       throw new InvalidRequestException("Invalid Request Exception: No identifier provided.");
     }
     if (EmptyPredicate.isNotEmpty(projectIdentifier)) {
-      Asserts.notEmpty(orgIdentifier, "Org Identifier");
-      Asserts.notEmpty(accountId, "Account Identifier");
+      if (EmptyPredicate.isEmpty(orgIdentifier))
+        throw new InvalidRequestException("Invalid Request Exception: No org identifier provided.");
+      if (EmptyPredicate.isEmpty(accountId))
+        throw new InvalidRequestException("Invalid Request Exception: No account identifier provided.");
       return String.format("%s/%s/%s/%s", accountId, orgIdentifier, projectIdentifier, identifier);
     } else if (EmptyPredicate.isNotEmpty(orgIdentifier)) {
-      Asserts.notEmpty(accountId, "Account Identifier");
+      if (EmptyPredicate.isEmpty(accountId))
+        throw new InvalidRequestException("Invalid Request Exception: No account identifier provided.");
       return String.format("%s/%s/%s", accountId, orgIdentifier, identifier);
     } else if (EmptyPredicate.isNotEmpty(accountId)) {
       return String.format("%s/%s", accountId, identifier);
