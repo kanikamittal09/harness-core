@@ -16,5 +16,5 @@ bazel ${bazelrc} build ${BAZEL_ARGUMENTS}
 cat ${BAZEL_DIRS}/out/stable-status.txt
 cat ${BAZEL_DIRS}/out/volatile-status.txt
 
-ACCESS_CONTROL_MODULE="//access-control/service:module"
-bazel ${bazelrc} build $ACCESS_CONTROL_MODULE `bazel query "//...:*" | grep "module_deploy.jar"` ${BAZEL_ARGUMENTS} --remote_download_outputs=all
+ACCESS_CONTROL_MODULE="//access-control/service:module //access-control/service:module_deploy.jar"
+bazel ${bazelrc} build $ACCESS_CONTROL_MODULE ${BAZEL_ARGUMENTS} --remote_download_outputs=all
