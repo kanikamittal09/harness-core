@@ -300,9 +300,9 @@ cp ${HOME}/.bazel-dirs/bin/access-control/service/module_deploy.jar accesscontro
 cp ../../access-control/config/config.yml .
 cp ../../access-control/config/keystore.jks .
 cp ../../alpn-boot-8.1.13.v20181017.jar .
-cp ../../access-control/container/Dockerfile-accesscontrol-service-jenkins-k8-openjdk ./Dockerfile
-cp ../../access-control/container/Dockerfile-accesscontrol-service-jenkins-k8-gcr-openjdk ./Dockerfile-gcr
-cp -r ../../access-control/container/scripts/ .
+cp ../../access-control/build/container/Dockerfile-accesscontrol-service-jenkins-k8-openjdk ./Dockerfile
+cp ../../access-control/build/container/Dockerfile-accesscontrol-service-jenkins-k8-gcr-openjdk ./Dockerfile-gcr
+cp -r ../../access-control/build/container/scripts/ .
 cp ../../protocol.info .
 echo ${JDK} > jdk.txt
 echo ${VERSION} > version.txt

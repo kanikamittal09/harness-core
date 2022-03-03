@@ -30,7 +30,7 @@ chmod +x scripts/bazel/UpdateVersionInfoyaml.sh
 chmod +x access-control/build/build_jar.sh
 chmod +x access-control/build/build_dist.sh
 
-scripts/bazel/UpdateVersionInfoyaml.sh $VERSION access-control/config/build.properties
+scripts/bazel/UpdateVersionInfoyaml.sh $VERSION access-control/build.properties
 access-control/build/build_jar.sh
 access-control/build/build_dist.sh || true
 
