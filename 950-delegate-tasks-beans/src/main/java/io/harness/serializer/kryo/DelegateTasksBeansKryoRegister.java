@@ -515,6 +515,7 @@ import software.wings.service.impl.appdynamics.AppdynamicsMetricDataValue;
 import software.wings.service.impl.appdynamics.AppdynamicsTier;
 import software.wings.service.impl.aws.model.AwsAmiPreDeploymentData;
 import software.wings.service.impl.aws.model.AwsAsgGetRunningCountData;
+import software.wings.service.impl.aws.model.AwsCFTemplateParamsData;
 import software.wings.service.impl.aws.model.AwsLambdaVpcConfig;
 import software.wings.service.impl.aws.model.AwsSubnet;
 import software.wings.service.impl.aws.model.AwsVPC;
@@ -1112,5 +1113,6 @@ public class DelegateTasksBeansKryoRegister implements KryoRegistrar {
     kryo.register(ArtifactoryFetchRepositoriesResponse.class, 543477);
     kryo.register(ArtifactoryFetchBuildsResponse.class, 543478);
     kryo.register(ArtifactoryStoreDelegateConfig.class, 543479);
+    kryo.register(AwsCFTemplateParamsData.class, 5478);
   }
 }
