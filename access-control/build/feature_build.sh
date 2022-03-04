@@ -17,11 +17,10 @@ export KEY_STORE="/tmp/harness_wild.p12"
 export KEY_STORE_PASSWORD=$KEYSTORE_PASS
 
 export GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
-export IMAGE_TAG=$VERSION-$GIT_BRANCH
 export GIT_COMMIT=$(git rev-parse HEAD)
 
 echo "--------------------------------------"
-echo $JDK $VERSION $PURPOSE $GIT_BRANCH $IMAGE_TAG $GIT_COMMIT $(date)
+echo $JDK $BUILD $VERSION $PURPOSE $GIT_BRANCH $GIT_COMMIT $(date)
 echo "--------------------------------------"
 
 yum install zlib-devel -y
@@ -30,7 +29,7 @@ chmod +x scripts/bazel/UpdateVersionInfoyaml.sh
 chmod +x access-control/build/build_jar.sh
 chmod +x access-control/build/build_dist.sh
 
-scripts/bazel/UpdateVersionInfoyaml.sh $VERSION access-control/build.properties
+scripts/bazel/UpdateVersionInfoyaml.sh $BUILD access-control/build.properties
 access-control/build/build_jar.sh
 access-control/build/build_dist.sh || true
 
