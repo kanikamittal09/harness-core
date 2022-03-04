@@ -15,6 +15,7 @@ import static io.harness.ng.core.common.beans.NGTag.NGTagKeys;
 import static io.harness.outbox.TransactionOutboxModule.OUTBOX_TRANSACTION_TEMPLATE;
 import static io.harness.resourcegroup.v2.model.ResourceFilter.ResourceFilterKeys;
 import static io.harness.resourcegroup.v2.model.ResourceGroup.ResourceGroupKeys;
+import static io.harness.resourcegroup.v2.model.ResourceSelector.ResourceSelectorKeys;
 import static io.harness.springdata.TransactionUtils.DEFAULT_TRANSACTION_RETRY_POLICY;
 import static io.harness.utils.PageUtils.getPageRequest;
 
@@ -149,9 +150,10 @@ public class ResourceGroupServiceImpl implements ResourceGroupService {
       List<Criteria> resourceSelectorCriteria = new ArrayList<>();
       resourceGroupFilterDTO.getResourceSelectorFilterList().forEach(resourceSelectorFilter
           -> resourceSelectorCriteria.add(Criteria.where(ResourceGroupKeys.resourceFilter)
-                                              .elemMatch(Criteria.where(ResourceFilterKeys.resourceType)
+                                              .where(ResourceFilterKeys.resources)
+                                              .elemMatch(Criteria.where(ResourceSelectorKeys.resourceType)
                                                              .is(resourceSelectorFilter.getResourceType())
-                                                             .and(ResourceFilterKeys.identifiers)
+                                                             .and(ResourceSelectorKeys.identifiers)
                                                              .is(resourceSelectorFilter.getResourceIdentifier()))));
       andOperatorCriteriaList.add(new Criteria().orOperator(resourceSelectorCriteria.toArray(new Criteria[0])));
     }
