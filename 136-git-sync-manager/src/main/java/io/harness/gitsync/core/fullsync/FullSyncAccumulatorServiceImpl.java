@@ -172,6 +172,9 @@ public class FullSyncAccumulatorServiceImpl implements FullSyncAccumulatorServic
   private ScopeDetails getScopeDetails(EntityScopeInfo entityScopeInfo, String messageId) {
     Map<String, String> logContext = new HashMap<>();
     logContext.put("messageId", messageId);
+    logContext.put("accountId", entityScopeInfo.getAccountId());
+    logContext.put("orgId", entityScopeInfo.getOrgId().getValue());
+    logContext.put("projectId", entityScopeInfo.getProjectId().getValue());
     return ScopeDetails.newBuilder().setEntityScope(entityScopeInfo).putAllLogContext(logContext).build();
   }
 

@@ -132,8 +132,12 @@ public class GitFullSyncProcessorServiceImpl implements io.harness.gitsync.core.
     for (GitFullSyncEntityInfo fullSyncEntityInfo : entityInfoList) {
       fullSyncChangeSets.add(getFullSyncChangeSet(fullSyncEntityInfo, yamlGitConfigDTO));
     }
+    log.info("Performing full sync for microservice [{}]", microservice);
     Map<String, String> logContext = new HashMap<>();
     logContext.put("messageId", gitFullSyncEntityInfo.getMessageId());
+    logContext.put("accountId", gitFullSyncEntityInfo.getAccountIdentifier());
+    logContext.put("orgId", gitFullSyncEntityInfo.getOrgIdentifier());
+    logContext.put("projectId", gitFullSyncEntityInfo.getProjectIdentifier());
     return GitSyncGrpcClientUtils.retryAndProcessException(fullSyncServiceBlockingStub::performEntitySync,
         FullSyncRequest.newBuilder().putAllLogContext(logContext).addAllFileChanges(fullSyncChangeSets).build());
   }

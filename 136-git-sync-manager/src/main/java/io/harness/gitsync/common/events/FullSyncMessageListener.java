@@ -38,8 +38,6 @@ public class FullSyncMessageListener implements MessageListener {
     final String messageId = message.getId();
     log.info("Processing the Full Sync event with the id {}", messageId);
     try (AutoLogContext ignore1 = new NgEventLogContext(messageId, OVERRIDE_ERROR)) {
-      Map<String, String> metadataMap = message.getMessage().getMetadataMap();
-      final String accountId = metadataMap.getOrDefault("accountId", null);
 
       final FullSyncEventRequest fullSyncEventRequest = getFullSyncEventRequest(message);
       fullSyncTriggerService.triggerFullSync(fullSyncEventRequest, messageId);
