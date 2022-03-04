@@ -46,7 +46,8 @@ public class CloudformationCreateStackStepConfiguration {
   ParameterField<List<String>> awsCapabilities;
   List<NGVariable> tags;
   @JsonProperty("cloudformationSkipWaitForResources") ParameterField<Boolean> cloudformationSkipWaitForResources;
-  @JsonProperty("cloudformationSkipWaitForResources") ParameterField<Integer> cloudformationSkipWaitForResourcesTimeout;
+  @JsonProperty("cloudformationSkipWaitForResourcesTimeout")
+  ParameterField<Integer> cloudformationSkipWaitForResourcesTimeout;
   @JsonProperty("skipBasedOnStackStatuses") ParameterField<List<String>> skipBasedOnStackStatuses;
 
   void validateParams() {

@@ -11,32 +11,34 @@ import io.harness.EntityType;
 import io.harness.annotations.dev.HarnessTeam;
 import io.harness.annotations.dev.OwnedBy;
 import io.harness.beans.IdentifierRef;
-import io.harness.delegate.task.cloudformation.CloudformationTaskNGResponse;
 import io.harness.executions.steps.ExecutionNodeType;
 import io.harness.ng.core.EntityDetail;
 import io.harness.plancreator.steps.common.StepElementParameters;
-import io.harness.plancreator.steps.common.rollback.TaskExecutableWithRollbackAndRbac;
+import io.harness.plancreator.steps.common.rollback.TaskChainExecutableWithRollbackAndRbac;
 import io.harness.pms.contracts.ambiance.Ambiance;
-import io.harness.pms.contracts.execution.tasks.TaskRequest;
 import io.harness.pms.contracts.steps.StepCategory;
 import io.harness.pms.contracts.steps.StepType;
 import io.harness.pms.execution.utils.AmbianceUtils;
 import io.harness.pms.rbac.PipelineRbacHelper;
+import io.harness.pms.sdk.core.steps.executables.TaskChainResponse;
+import io.harness.pms.sdk.core.steps.io.PassThroughData;
 import io.harness.pms.sdk.core.steps.io.StepInputPackage;
 import io.harness.pms.sdk.core.steps.io.StepResponse;
 import io.harness.serializer.KryoSerializer;
 import io.harness.steps.StepHelper;
 import io.harness.supplier.ThrowingSupplier;
+import io.harness.tasks.ResponseData;
 import io.harness.utils.IdentifierRefHelper;
 
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 
 @OwnedBy(HarnessTeam.CDP)
 @Slf4j
-public class CloudformationCreateStackStep extends TaskExecutableWithRollbackAndRbac<CloudformationTaskNGResponse> {
+public class CloudformationCreateStackStep extends TaskChainExecutableWithRollbackAndRbac {
   public static final StepType STEP_TYPE = StepType.newBuilder()
                                                .setType(ExecutionNodeType.CLOUDFORMATION_CREATE_STACK.getYamlType())
                                                .setStepCategory(StepCategory.STEP)
@@ -55,8 +57,8 @@ public class CloudformationCreateStackStep extends TaskExecutableWithRollbackAnd
     // Template file connector
     CloudformationCreateStackStepConfiguration cloudformationStepConfiguration =
         (CloudformationCreateStackStepConfiguration) stepParameters.getSpec();
-    if (cloudformationStepConfiguration.getTemplateFilesWrapper().getTemplateFile().getSpec().getType()
-        == CloudformationTemplateFileTypes.Remote) {
+    if (Objects.equals(cloudformationStepConfiguration.getTemplateFilesWrapper().getTemplateFile().getSpec().getType(),
+            CloudformationTemplateFileTypes.Remote)) {
       RemoteCloudformationTemplateFileSpec remoteTemplateFile =
           (RemoteCloudformationTemplateFileSpec) cloudformationStepConfiguration.getTemplateFilesWrapper()
               .getTemplateFile()
@@ -71,16 +73,21 @@ public class CloudformationCreateStackStep extends TaskExecutableWithRollbackAnd
   }
 
   @Override
-  public TaskRequest obtainTaskAfterRbac(
-      Ambiance ambiance, StepElementParameters stepParameters, StepInputPackage inputPackage) {
+  public TaskChainResponse executeNextLinkWithSecurityContext(Ambiance ambiance, StepElementParameters stepParameters,
+      StepInputPackage inputPackage, PassThroughData passThroughData, ThrowingSupplier<ResponseData> responseSupplier)
+      throws Exception {
     return null;
   }
 
   @Override
-  public StepResponse handleTaskResultWithSecurityContext(Ambiance ambiance, StepElementParameters stepParameters,
-      ThrowingSupplier<CloudformationTaskNGResponse> responseDataSupplier) throws Exception {
-    log.info("Handling Task Result With Security Context for the CreateStack Step");
+  public StepResponse finalizeExecutionWithSecurityContext(Ambiance ambiance, StepElementParameters stepParameters,
+      PassThroughData passThroughData, ThrowingSupplier<ResponseData> responseDataSupplier) throws Exception {
+    return null;
+  }
 
+  @Override
+  public TaskChainResponse startChainLinkAfterRbac(
+      Ambiance ambiance, StepElementParameters stepParameters, StepInputPackage inputPackage) {
     return null;
   }
 

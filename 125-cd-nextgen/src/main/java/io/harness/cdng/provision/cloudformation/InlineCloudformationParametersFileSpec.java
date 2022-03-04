@@ -20,11 +20,11 @@ import lombok.NoArgsConstructor;
 @OwnedBy(CDP)
 @Data
 @NoArgsConstructor
-public class InlineCloudformationTemplateFileSpec implements CloudformationTemplateFileSpec {
+public class InlineCloudformationParametersFileSpec implements CloudformationParametersFileSpec {
   @ApiModelProperty(dataType = SwaggerConstants.STRING_CLASSPATH) ParameterField<String> content;
 
   @Override
   public String getType() {
-    return CloudformationTemplateFileTypes.Inline;
+    return CloudformationParametersFileTypes.Inline;
   }
 }

@@ -7,19 +7,15 @@
 
 package io.harness.cdng.provision.cloudformation;
 
-import static io.harness.annotations.dev.HarnessTeam.CDP;
-
-import io.harness.annotation.RecasterAlias;
-import io.harness.annotations.dev.OwnedBy;
+import io.harness.cdng.manifest.yaml.storeConfig.StoreConfigWrapper;
 
 import javax.validation.constraints.NotNull;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@OwnedBy(CDP)
-@Data
-@NoArgsConstructor
-@RecasterAlias("io.harness.cdng.provision.cloudformation.ParametersFilesWrapper")
-public class CloudformationParametersFilesWrapper {
-  @NotNull CloudformationParametersFile templateFile;
+public class RemoteCloudformationParametersFileSpec implements CloudformationTemplateFileSpec {
+  @NotNull StoreConfigWrapper store;
+
+  @Override
+  public String getType() {
+    return CloudformationParametersFileTypes.Remote;
+  }
 }
