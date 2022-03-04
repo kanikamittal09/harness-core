@@ -46,5 +46,5 @@ public class ResourceGroupDTO {
 
   @NotNull @NotEmpty @Valid List<ScopeSelector> includedScopes;
 
-  List<ResourceFilter> resourceFilter;
+  ResourceFilter resourceFilter;
 }
