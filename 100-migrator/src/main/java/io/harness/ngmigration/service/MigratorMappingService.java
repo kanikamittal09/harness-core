@@ -32,12 +32,12 @@ public class MigratorMappingService {
 
   public static String getFullyQualifiedIdentifier(String accountId, String org, String project, String identifier) {
     StringBuilder stringBuilder = new StringBuilder();
-    stringBuilder.append(accountId).append("/");
+    stringBuilder.append(accountId).append('/');
     if (StringUtils.isNotBlank(org)) {
-      stringBuilder.append(org).append("/");
+      stringBuilder.append(org).append('/');
     }
     if (StringUtils.isNotBlank(project)) {
-      stringBuilder.append(project).append("/");
+      stringBuilder.append(project).append('/');
     }
     return stringBuilder.append(identifier).toString();
   }
