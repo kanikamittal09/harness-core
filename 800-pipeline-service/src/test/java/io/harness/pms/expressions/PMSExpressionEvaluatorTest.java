@@ -215,8 +215,7 @@ public class PMSExpressionEvaluatorTest extends PipelineServiceTestBase {
     Reflect.on(nodeExecution4).set("status", Status.SUCCEEDED);
 
     // pipeline children
-    when(nodeExecutionService.findAllChildrenWithStatusIn(planExecutionId, nodeExecution1.getUuid(),
-             StatusUtils.finalStatuses(), false, true,
+    when(nodeExecutionService.findAllChildrenWithStatusIn(planExecutionId, nodeExecution1.getUuid(), null, false, true,
              Sets.newHashSet(NodeExecutionKeys.parentId, NodeExecutionKeys.status), Collections.emptySet()))
         .thenReturn(Arrays.asList(nodeExecution4, nodeExecution5));
 
