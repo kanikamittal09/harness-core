@@ -56,6 +56,7 @@ import io.harness.cvng.core.beans.params.ProjectParams;
 import io.harness.cvng.core.entities.AppDynamicsCVConfig;
 import io.harness.cvng.core.entities.CVConfig;
 import io.harness.cvng.core.entities.CVNGLog;
+import io.harness.cvng.core.entities.CVNGLog.CVNGLogKeys;
 import io.harness.cvng.core.entities.DataCollectionTask;
 import io.harness.cvng.core.entities.DataCollectionTask.DataCollectionTaskKeys;
 import io.harness.cvng.core.entities.DataCollectionTask.Type;
@@ -481,8 +482,8 @@ public class DataCollectionTaskServiceImplTest extends CvNextGenTestBase {
     assertThat(updated.getException()).isNull();
 
     CVNGLog cvngLogQuery = hPersistence.createQuery(CVNGLog.class)
-                               .filter(CVNGLog.CVNGLogKeys.traceableId, dataCollectionTask.getVerificationTaskId())
-                               .filter(CVNGLog.CVNGLogKeys.traceableType, TraceableType.VERIFICATION_TASK)
+                               .filter(CVNGLogKeys.traceableId, dataCollectionTask.getVerificationTaskId())
+                               .filter(CVNGLogKeys.traceableType, TraceableType.VERIFICATION_TASK)
                                .get();
     assertThat(cvngLogQuery).isNotNull();
     assertThat(cvngLogQuery.getLogType()).isEqualTo(CVNGLogType.EXECUTION_LOG);

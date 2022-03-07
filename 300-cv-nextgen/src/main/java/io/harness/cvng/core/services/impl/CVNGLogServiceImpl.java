@@ -165,14 +165,6 @@ public class CVNGLogServiceImpl implements CVNGLogService {
     });
 
     if (errorLogsOnly) {
-      /*switch (logType) {
-        case CVNGLogType.API_CALL_LOG:
-          return ;
-        case :
-          return ;
-        default:
-          throw new IllegalStateException("CVNG Logs: Log Type cannot be null");
-      }*/
       if (logType.equals(CVNGLogType.API_CALL_LOG)) {
         final List<ApiCallLogDTO> apiCallLogDTOS = new ArrayList<>();
         cvngLogDTOs.forEach(cvngLogDTO -> apiCallLogDTOS.add((ApiCallLogDTO) cvngLogDTO));
@@ -197,8 +189,6 @@ public class CVNGLogServiceImpl implements CVNGLogService {
       }
     }
 
-    /*//cvngLogDTOs.forEach(cvngLogDTO -> Collections.sort(cvngLogDTOs, new CVNGLogRecordComparator()));
-    Collections.sort(cvngLogDTOs, new CVNGLogRecordComparator())*/
     return PageUtils.offsetAndLimit(cvngLogDTOs, pageParams.getPage(), pageParams.getSize());
   }
 
