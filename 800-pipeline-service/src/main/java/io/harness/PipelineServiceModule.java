@@ -349,9 +349,20 @@ public class PipelineServiceModule extends AbstractModule {
     bind(ScheduledExecutorService.class)
         .annotatedWith(Names.named("taskPollExecutor"))
         .toInstance(new ManagedScheduledExecutorService("TaskPoll-Thread"));
+
     bind(ScheduledExecutorService.class)
-        .annotatedWith(Names.named("progressUpdateServiceExecutor"))
-        .toInstance(new ManagedScheduledExecutorService("ProgressUpdateServiceExecutor-Thread"));
+        .annotatedWith(Names.named("progressUpdatePoller"))
+        .toInstance(new ManagedScheduledExecutorService("ProgressUpdatePoller-Thread"));
+    bind(ScheduledExecutorService.class)
+        .annotatedWith(Names.named("asyncTaskPoller"))
+        .toInstance(new ManagedScheduledExecutorService("AsyncTaskPoller-Thread"));
+    bind(ScheduledExecutorService.class)
+        .annotatedWith(Names.named("syncTaskPoller"))
+        .toInstance(new ManagedScheduledExecutorService("SyncTaskPoller-Thread"));
+    bind(ScheduledExecutorService.class)
+        .annotatedWith(Names.named("progressTaskPoller"))
+        .toInstance(new ManagedScheduledExecutorService("ProgressTaskPoller-Thread"));
+
     bind(TriggerWebhookExecutionService.class).to(TriggerWebhookExecutionServiceImpl.class);
     bind(TriggerWebhookExecutionServiceV2.class).to(TriggerWebhookExecutionServiceImplV2.class);
     bind(ScheduledExecutorService.class)

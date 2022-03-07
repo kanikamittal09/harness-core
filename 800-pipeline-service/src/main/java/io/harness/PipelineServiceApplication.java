@@ -707,16 +707,19 @@ public class PipelineServiceApplication extends Application<PipelineServiceConfi
   }
 
   private void registerScheduledJobs(Injector injector, PipelineServiceConfiguration appConfig) {
-    injector.getInstance(Key.get(ScheduledExecutorService.class, Names.named("taskPollExecutor")))
+    injector.getInstance(Key.get(ScheduledExecutorService.class, Names.named("syncTaskPoller")))
         .scheduleWithFixedDelay(injector.getInstance(DelegateSyncServiceImpl.class), 0L,
             appConfig.getDelegatePollingConfig().getSyncDelay(), TimeUnit.MILLISECONDS);
-    injector.getInstance(Key.get(ScheduledExecutorService.class, Names.named("taskPollExecutor")))
+
+    injector.getInstance(Key.get(ScheduledExecutorService.class, Names.named("asyncTaskPoller")))
         .scheduleWithFixedDelay(injector.getInstance(DelegateAsyncServiceImpl.class), 0L,
             appConfig.getDelegatePollingConfig().getAsyncDelay(), TimeUnit.MILLISECONDS);
-    injector.getInstance(Key.get(ScheduledExecutorService.class, Names.named("taskPollExecutor")))
+
+    injector.getInstance(Key.get(ScheduledExecutorService.class, Names.named("progressTaskPoller")))
         .scheduleWithFixedDelay(injector.getInstance(DelegateProgressServiceImpl.class), 0L,
             appConfig.getDelegatePollingConfig().getProgressDelay(), TimeUnit.MILLISECONDS);
-    injector.getInstance(Key.get(ScheduledExecutorService.class, Names.named("progressUpdateServiceExecutor")))
+
+    injector.getInstance(Key.get(ScheduledExecutorService.class, Names.named("progressUpdatePoller")))
         .scheduleWithFixedDelay(injector.getInstance(ProgressUpdateService.class), 0L,
             appConfig.getDelegatePollingConfig().getProgressDelay(), TimeUnit.MILLISECONDS);
 

@@ -43,9 +43,13 @@ public class GraphUpdateDispatcher implements Runnable {
              ImmutableMap.of("planExecutionId", planExecutionId), AutoLogContext.OverrideBehavior.OVERRIDE_NESTS)) {
       log.info("Start processing graph update via dispatcher for {} messageIds", messageIds.size());
       checkAndLogSchedulingDelays(planExecutionId, startTs);
-      boolean shouldAck = graphGenerationService.updateGraph(planExecutionId);
-      // TODO : handle should ack
-      messageIds.forEach(consumer::acknowledge);
+      boolean shouldAck = graphGenerationService.updateGraphWithWaitLock(planExecutionId);
+      if (shouldAck) {
+        messageIds.forEach(consumer::acknowledge);
+        log.debug("Successfully acked the messageIds: {}", messageIds);
+        return;
+      }
+      log.info("Graph update failed not acking: {}", messageIds);
     }
   }
 
