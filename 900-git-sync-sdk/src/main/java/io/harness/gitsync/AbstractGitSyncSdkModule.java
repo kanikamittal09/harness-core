@@ -63,9 +63,6 @@ public abstract class AbstractGitSyncSdkModule extends AbstractModule {
     install(new SCMGrpcClientModule(getScmConnectionConfig()));
     install(GitSyncSdkModule.getInstance());
     if (getGitSyncSdkConfiguration().getEventsRedisConfig().getRedisUrl().equals("dummyRedisUrl")) {
-      bind(Producer.class)
-          .annotatedWith(Names.named(EventsFrameworkConstants.HARNESS_TO_GIT_PUSH))
-          .toInstance(NoOpProducer.of(EventsFrameworkConstants.DUMMY_TOPIC_NAME));
       bind(Consumer.class)
           .annotatedWith(Names.named(EventsFrameworkConstants.GIT_CONFIG_STREAM + GIT_SYNC_SDK))
           .toInstance(
@@ -73,11 +70,6 @@ public abstract class AbstractGitSyncSdkModule extends AbstractModule {
     } else {
       RedisConfig redisConfig = getGitSyncSdkConfiguration().getEventsRedisConfig();
       RedissonClient redissonClient = RedisUtils.getClient(redisConfig);
-      bind(Producer.class)
-          .annotatedWith(Names.named(EventsFrameworkConstants.HARNESS_TO_GIT_PUSH))
-          .toInstance(RedisProducer.of(EventsFrameworkConstants.HARNESS_TO_GIT_PUSH, redissonClient,
-              EventsFrameworkConstants.HARNESS_TO_GIT_PUSH_MAX_TOPIC_SIZE,
-              getAuthorizationServiceHeader().getServiceId(), redisConfig.getEnvNamespace()));
       bind(Consumer.class)
           .annotatedWith(Names.named(EventsFrameworkConstants.GIT_CONFIG_STREAM + GIT_SYNC_SDK))
           .toInstance(RedisConsumer.of(EventsFrameworkConstants.GIT_CONFIG_STREAM,
