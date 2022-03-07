@@ -14,9 +14,11 @@ import io.harness.annotations.dev.HarnessTeam;
 import io.harness.annotations.dev.OwnedBy;
 import io.harness.network.Http;
 import io.harness.ng.core.utils.NGYamlUtils;
+import io.harness.ngmigration.beans.BaseEntityInput;
 import io.harness.ngmigration.beans.DiscoverEntityInput;
 import io.harness.ngmigration.beans.DiscoveryInput;
 import io.harness.ngmigration.beans.MigrationInputDTO;
+import io.harness.ngmigration.beans.MigrationInputResult;
 import io.harness.ngmigration.beans.NgEntityDetail;
 import io.harness.ngmigration.client.NGClient;
 import io.harness.ngmigration.client.PmsClient;
@@ -44,6 +46,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -62,7 +65,8 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 @Slf4j
 @OwnedBy(HarnessTeam.CDC)
 public class DiscoveryService {
-  @Inject private io.harness.ngmigration.service.NgMigrationFactory migrationFactory;
+  @Inject private NgMigrationFactory migrationFactory;
+  @Inject private MigratorMappingService migratorMappingService;
   @Inject @Named("ngClientConfig") private ServiceHttpClientConfig ngClientConfig;
   @Inject @Named("pipelineServiceClientConfig") private ServiceHttpClientConfig pipelineServiceClientConfig;
 
@@ -149,6 +153,17 @@ public class DiscoveryService {
     }
   }
 
+  public MigrationInputResult migrationInput(DiscoveryResult result) {
+    Collection<CgEntityNode> cgEntityNodes = result.getEntities().values();
+    Map<CgEntityId, BaseEntityInput> inputMap = new HashMap<>();
+    for (CgEntityNode node : cgEntityNodes) {
+      NgMigrationService ngMigration = migrationFactory.getMethod(node.getType());
+      inputMap.put(
+          node.getEntityId(), ngMigration.generateInput(result.getEntities(), result.getLinks(), node.getEntityId()));
+    }
+    return MigrationInputResult.builder().inputs(inputMap).build();
+  }
+
   public List<NGYamlFile> migrateEntity(String auth, MigrationInputDTO inputDTO, DiscoveryResult discoveryResult) {
     Map<CgEntityId, CgEntityNode> entities = discoveryResult.getEntities();
     Map<CgEntityId, Set<CgEntityId>> graph = discoveryResult.getLinks();
@@ -181,7 +196,12 @@ public class DiscoveryService {
     for (NGYamlFile file : ngYamlFiles) {
       try {
         NgMigrationService ngMigration = migrationFactory.getMethod(file.getType());
-        ngMigration.migrate(auth, ngClient, pmsClient, inputDTO, file);
+        if (!file.isExists()) {
+          ngMigration.migrate(auth, ngClient, pmsClient, inputDTO, file);
+        } else {
+          log.info("Skipping creation of entity with basic info {}", file.getCgBasicInfo());
+        }
+        migratorMappingService.mapCgNgEntity(file);
       } catch (IOException e) {
         log.error("Unable to migrate entity", e);
       }

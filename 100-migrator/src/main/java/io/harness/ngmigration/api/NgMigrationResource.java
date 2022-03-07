@@ -14,6 +14,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import io.harness.annotations.dev.OwnedBy;
 import io.harness.ngmigration.beans.DiscoveryInput;
 import io.harness.ngmigration.beans.MigrationInputDTO;
+import io.harness.ngmigration.beans.MigrationInputResult;
 import io.harness.ngmigration.service.DiscoveryService;
 import io.harness.rest.RestResponse;
 
@@ -74,5 +75,16 @@ public class NgMigrationResource {
       MigrationInputDTO inputDTO) {
     DiscoveryResult result = discoveryService.discover(accountId, appId, entityId, entityType);
     return new RestResponse<>(discoveryService.migrateEntity(auth, inputDTO, result));
+  }
+
+  @GET
+  @Path("/input")
+  @Timed
+  @ExceptionMetered
+  public RestResponse<MigrationInputResult> getInputs(@QueryParam("entityId") String entityId,
+      @QueryParam("appId") String appId, @QueryParam("accountId") String accountId,
+      @QueryParam("entityType") NGMigrationEntityType entityType) {
+    DiscoveryResult result = discoveryService.discover(accountId, appId, entityId, entityType);
+    return new RestResponse<>(discoveryService.migrationInput(result));
   }
 }
