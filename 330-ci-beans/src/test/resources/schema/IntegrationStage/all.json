@@ -1730,7 +1730,9 @@
               "type": "boolean"
             },
             {
-              "type": "string"
+              "type": "string",
+              "pattern": "^<\\+input>(\\.(allowedValues|regex)\\(.+?\\))*$",
+              "minLength": 1
             }
           ]
         },
