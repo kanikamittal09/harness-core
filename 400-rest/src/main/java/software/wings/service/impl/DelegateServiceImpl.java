@@ -1758,7 +1758,7 @@ public class DelegateServiceImpl implements DelegateService {
               .logStreamingServiceBaseUrl(mainConfiguration.getLogStreamingServiceConfig().getBaseUrl())
               .delegateTokenName(tokenName)
               .delegateCpu(1)
-              .delegateRam(8)
+              .delegateRam(4)
               .build(),
           false);
 
