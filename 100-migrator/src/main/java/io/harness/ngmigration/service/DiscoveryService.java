@@ -163,8 +163,11 @@ public class DiscoveryService {
     Map<CgEntityId, BaseEntityInput> inputMap = new HashMap<>();
     for (CgEntityNode node : cgEntityNodes) {
       NgMigrationService ngMigration = migrationFactory.getMethod(node.getType());
-      inputMap.put(
-          node.getEntityId(), ngMigration.generateInput(result.getEntities(), result.getLinks(), node.getEntityId()));
+      BaseEntityInput generatedInputs =
+          ngMigration.generateInput(result.getEntities(), result.getLinks(), node.getEntityId());
+      if (generatedInputs != null) {
+        inputMap.put(node.getEntityId(), generatedInputs);
+      }
     }
     return MigrationInputResult.builder().inputs(inputMap).build();
   }
