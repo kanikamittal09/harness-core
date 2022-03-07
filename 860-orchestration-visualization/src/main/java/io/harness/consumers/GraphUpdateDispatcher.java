@@ -44,12 +44,8 @@ public class GraphUpdateDispatcher implements Runnable {
       log.info("Start processing graph update via dispatcher for {} messageIds", messageIds.size());
       checkAndLogSchedulingDelays(planExecutionId, startTs);
       boolean shouldAck = graphGenerationService.updateGraph(planExecutionId);
-      if (shouldAck) {
-        messageIds.forEach(consumer::acknowledge);
-        log.debug("Successfully acked the messageIds: {}", messageIds);
-        return;
-      }
-      log.info("Graph update failed not acking: {}", messageIds);
+      // TODO : handle should ack
+      messageIds.forEach(consumer::acknowledge);
     }
   }
 
