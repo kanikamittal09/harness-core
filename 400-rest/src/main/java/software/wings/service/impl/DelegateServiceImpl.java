@@ -1289,7 +1289,7 @@ public class DelegateServiceImpl implements DelegateService {
       if (isNotBlank(templateParameters.getDelegateXmx())) {
         params.put("delegateXmx", templateParameters.getDelegateXmx());
       } else {
-        params.put("delegateXmx", "-Xmx4096m");
+        params.put("delegateXmx", "-Xmx1536m");
       }
 
       JreConfig jreConfig = getJreConfig(templateParameters.getAccountId());
