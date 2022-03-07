@@ -13,9 +13,11 @@ import static io.harness.logging.AutoLogContext.OverrideBehavior.OVERRIDE_ERROR;
 import io.harness.annotations.dev.OwnedBy;
 import io.harness.eventsframework.NgEventLogContext;
 import io.harness.eventsframework.consumer.Message;
+import io.harness.eventsframework.schemas.entity.EntityScopeInfo;
 import io.harness.exception.InvalidRequestException;
 import io.harness.gitsync.FullSyncEventRequest;
 import io.harness.gitsync.core.fullsync.FullSyncAccumulatorService;
+import io.harness.gitsync.fullsync.utils.FullSyncLogContextHelper;
 import io.harness.logging.AutoLogContext;
 import io.harness.ng.core.event.MessageListener;
 
@@ -40,9 +42,14 @@ public class FullSyncMessageListener implements MessageListener {
     try (AutoLogContext ignore1 = new NgEventLogContext(messageId, OVERRIDE_ERROR)) {
 
       final FullSyncEventRequest fullSyncEventRequest = getFullSyncEventRequest(message);
-      fullSyncTriggerService.triggerFullSync(fullSyncEventRequest, messageId);
-      log.info("Successfully completed the Full Sync event with the id {}", messageId);
-      return true;
+      final EntityScopeInfo gitConfigScope = fullSyncEventRequest.getGitConfigScope();
+      Map<String, String> logContext = FullSyncLogContextHelper.getContext(gitConfigScope.getAccountId(),
+          gitConfigScope.getOrgId().getValue(), gitConfigScope.getProjectId().getValue(), messageId);
+      try (AutoLogContext ignore2 = new AutoLogContext(logContext, OVERRIDE_ERROR)) {
+        fullSyncTriggerService.triggerFullSync(fullSyncEventRequest, messageId);
+        log.info("Successfully completed the Full Sync event with the id {}", messageId);
+        return true;
+      }
     }
   }
 

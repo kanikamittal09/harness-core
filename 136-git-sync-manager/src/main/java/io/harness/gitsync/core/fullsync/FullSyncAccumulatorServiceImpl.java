@@ -34,6 +34,7 @@ import io.harness.gitsync.common.service.YamlGitConfigService;
 import io.harness.gitsync.core.beans.GitFullSyncEntityInfo;
 import io.harness.gitsync.core.fullsync.entity.GitFullSyncJob;
 import io.harness.gitsync.core.fullsync.service.FullSyncJobService;
+import io.harness.gitsync.fullsync.utils.FullSyncLogContextHelper;
 import io.harness.ng.core.entitydetail.EntityDetailProtoToRestMapper;
 import io.harness.security.dto.UserPrincipal;
 
@@ -170,11 +171,8 @@ public class FullSyncAccumulatorServiceImpl implements FullSyncAccumulatorServic
   }
 
   private ScopeDetails getScopeDetails(EntityScopeInfo entityScopeInfo, String messageId) {
-    Map<String, String> logContext = new HashMap<>();
-    logContext.put("messageId", messageId);
-    logContext.put("accountId", entityScopeInfo.getAccountId());
-    logContext.put("orgId", entityScopeInfo.getOrgId().getValue());
-    logContext.put("projectId", entityScopeInfo.getProjectId().getValue());
+    Map<String, String> logContext = FullSyncLogContextHelper.getContext(entityScopeInfo.getAccountId(),
+        entityScopeInfo.getOrgId().getValue(), entityScopeInfo.getProjectId().getValue(), messageId);
     return ScopeDetails.newBuilder().setEntityScope(entityScopeInfo).putAllLogContext(logContext).build();
   }
 

@@ -34,6 +34,7 @@ import io.harness.gitsync.core.beans.GitFullSyncEntityInfo;
 import io.harness.gitsync.core.fullsync.beans.FullSyncFilesGroupedByMsvc;
 import io.harness.gitsync.core.fullsync.entity.GitFullSyncJob;
 import io.harness.gitsync.core.fullsync.service.FullSyncJobService;
+import io.harness.gitsync.fullsync.utils.FullSyncLogContextHelper;
 import io.harness.ng.core.entitydetail.EntityDetailRestToProtoMapper;
 import io.harness.security.SecurityContextBuilder;
 import io.harness.security.dto.ServicePrincipal;
@@ -133,11 +134,9 @@ public class GitFullSyncProcessorServiceImpl implements io.harness.gitsync.core.
       fullSyncChangeSets.add(getFullSyncChangeSet(fullSyncEntityInfo, yamlGitConfigDTO));
     }
     log.info("Performing full sync for microservice [{}]", microservice);
-    Map<String, String> logContext = new HashMap<>();
-    logContext.put("messageId", gitFullSyncEntityInfo.getMessageId());
-    logContext.put("accountId", gitFullSyncEntityInfo.getAccountIdentifier());
-    logContext.put("orgId", gitFullSyncEntityInfo.getOrgIdentifier());
-    logContext.put("projectId", gitFullSyncEntityInfo.getProjectIdentifier());
+    Map<String, String> logContext = FullSyncLogContextHelper.getContext(gitFullSyncEntityInfo.getAccountIdentifier(),
+        gitFullSyncEntityInfo.getOrgIdentifier(), gitFullSyncEntityInfo.getProjectIdentifier(),
+        gitFullSyncEntityInfo.getMessageId());
     return GitSyncGrpcClientUtils.retryAndProcessException(fullSyncServiceBlockingStub::performEntitySync,
         FullSyncRequest.newBuilder().putAllLogContext(logContext).addAllFileChanges(fullSyncChangeSets).build());
   }
