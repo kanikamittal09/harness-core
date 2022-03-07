@@ -50,8 +50,9 @@ public class NgMigrationResource {
   @Path("/discover-multi")
   @Timed
   @ExceptionMetered
-  public RestResponse<DiscoveryResult> discoverMultipleEntities(
-      @QueryParam("accountId") String accountId, DiscoveryInput discoveryInput) {
+  public RestResponse<DiscoveryResult> discoverMultipleEntities(@QueryParam("accountId") String accountId,
+      @QueryParam("exportImg") boolean exportImage, DiscoveryInput discoveryInput) {
+    discoveryInput.setExportImage(discoveryInput.isExportImage() || exportImage);
     return new RestResponse<>(discoveryService.discoverMulti(accountId, discoveryInput));
   }
 
@@ -61,8 +62,8 @@ public class NgMigrationResource {
   @ExceptionMetered
   public RestResponse<DiscoveryResult> discoverEntities(@QueryParam("entityId") String entityId,
       @QueryParam("appId") String appId, @QueryParam("accountId") String accountId,
-      @QueryParam("entityType") NGMigrationEntityType entityType) {
-    return new RestResponse<>(discoveryService.discover(accountId, appId, entityId, entityType));
+      @QueryParam("entityType") NGMigrationEntityType entityType, @QueryParam("exportImg") boolean exportImage) {
+    return new RestResponse<>(discoveryService.discover(accountId, appId, entityId, entityType, exportImage));
   }
 
   @POST
@@ -73,7 +74,7 @@ public class NgMigrationResource {
       @QueryParam("entityId") String entityId, @QueryParam("appId") String appId,
       @QueryParam("accountId") String accountId, @QueryParam("entityType") NGMigrationEntityType entityType,
       MigrationInputDTO inputDTO) {
-    DiscoveryResult result = discoveryService.discover(accountId, appId, entityId, entityType);
+    DiscoveryResult result = discoveryService.discover(accountId, appId, entityId, entityType, false);
     return new RestResponse<>(discoveryService.migrateEntity(auth, inputDTO, result));
   }
 
@@ -84,7 +85,7 @@ public class NgMigrationResource {
   public RestResponse<MigrationInputResult> getInputs(@QueryParam("entityId") String entityId,
       @QueryParam("appId") String appId, @QueryParam("accountId") String accountId,
       @QueryParam("entityType") NGMigrationEntityType entityType) {
-    DiscoveryResult result = discoveryService.discover(accountId, appId, entityId, entityType);
+    DiscoveryResult result = discoveryService.discover(accountId, appId, entityId, entityType, false);
     return new RestResponse<>(discoveryService.migrationInput(result));
   }
 }

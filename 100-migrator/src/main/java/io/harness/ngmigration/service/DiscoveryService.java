@@ -126,11 +126,14 @@ public class DiscoveryService {
         travel(accountId, appId, entities, graph, null, node);
       }
     }
-    exportImg(entities, graph);
+    if (discoveryInput.isExportImage()) {
+      exportImg(entities, graph);
+    }
     return DiscoveryResult.builder().entities(entities).links(graph).root(head.getEntityNode().getEntityId()).build();
   }
 
-  public DiscoveryResult discover(String accountId, String appId, String entityId, NGMigrationEntityType entityType) {
+  public DiscoveryResult discover(
+      String accountId, String appId, String entityId, NGMigrationEntityType entityType, boolean shouldExportImg) {
     Map<CgEntityId, CgEntityNode> entities = new HashMap<>();
     Map<CgEntityId, Set<CgEntityId>> graph = new HashMap<>();
 
@@ -140,7 +143,9 @@ public class DiscoveryService {
       throw new IllegalStateException("Root cannot be found!");
     }
     travel(accountId, appId, entities, graph, null, node);
-    exportImg(entities, graph);
+    if (shouldExportImg) {
+      exportImg(entities, graph);
+    }
     return DiscoveryResult.builder().entities(entities).links(graph).root(node.getEntityNode().getEntityId()).build();
   }
 
