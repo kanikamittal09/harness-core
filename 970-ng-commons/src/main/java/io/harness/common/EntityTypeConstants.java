@@ -79,5 +79,5 @@ public interface EntityTypeConstants {
   String FlagConfiguration = "FlagConfiguration";
   String OPAPOLICIES = "GovernancePolicies";
   String POLICY_STEP = "Policy";
-  String CLOUDFORMATION_CREATE_STACK_STEP = "CloudFormationCreateStack";
+  String CLOUDFORMATION_CREATE_STACK_STEP = "CreateStack";
 }

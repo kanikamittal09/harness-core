@@ -216,6 +216,17 @@ public class CDNGPlanCreatorProvider implements PipelineServiceInfoProvider {
                                                        .addFolderPaths(TERRAFORM_STEP_METADATA)
                                                        .build())
                                   .build();
+
+    StepInfo createStack = StepInfo.newBuilder()
+                               .setName("Create Stack")
+                               .setType(StepSpecTypeConstants.CLOUDFORMATION_CREATE_STACK)
+                               .setFeatureRestrictionName(FeatureRestrictionName.CREATE_STACK.name())
+                               .setStepMetaData(StepMetaData.newBuilder()
+                                                    .addAllCategory(TERRAFORM_CATEGORY)
+                                                    .addFolderPaths(TERRAFORM_STEP_METADATA)
+                                                    .build())
+                               .build();
+
     StepInfo terraformPlan = StepInfo.newBuilder()
                                  .setName("Terraform Plan")
                                  .setType(StepSpecTypeConstants.TERRAFORM_PLAN)
@@ -277,6 +288,7 @@ public class CDNGPlanCreatorProvider implements PipelineServiceInfoProvider {
     stepInfos.add(terraformDestroy);
     stepInfos.add(helmDeploy);
     stepInfos.add(helmRollback);
+    stepInfos.add(createStack);
     return stepInfos;
   }
 }
