@@ -62,7 +62,7 @@ public class IntegrationStageConfig implements StageInfoConfig {
   @YamlSchemaTypes(value = {runtime})
   @ApiModelProperty(dataType = "[Lio.harness.beans.dependencies.DependencyElement;")
   ParameterField<List<DependencyElement>> serviceDependencies;
-  @YamlSchemaTypes(value = {string})
+  @YamlSchemaTypes(value = {runtime})
   @ApiModelProperty(dataType = SwaggerConstants.BOOLEAN_CLASSPATH)
   private ParameterField<Boolean> cloneCodebase;
 }
