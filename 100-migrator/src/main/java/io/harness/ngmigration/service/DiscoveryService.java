@@ -12,6 +12,7 @@ import static io.harness.data.structure.EmptyPredicate.isNotEmpty;
 
 import io.harness.annotations.dev.HarnessTeam;
 import io.harness.annotations.dev.OwnedBy;
+import io.harness.data.structure.UUIDGenerator;
 import io.harness.network.Http;
 import io.harness.ng.core.utils.NGYamlUtils;
 import io.harness.ngmigration.beans.BaseEntityInput;
@@ -45,6 +46,8 @@ import io.serializer.HObjectMapper;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -56,6 +59,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import javax.ws.rs.core.StreamingOutput;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import org.apache.commons.io.FileUtils;
@@ -65,6 +69,8 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 @Slf4j
 @OwnedBy(HarnessTeam.CDC)
 public class DiscoveryService {
+  private static final String DEFAULT_ZIP_DIRECTORY = "/tmp/zip-output";
+
   @Inject private NgMigrationFactory migrationFactory;
   @Inject private MigratorMappingService migratorMappingService;
   @Inject @Named("ngClientConfig") private ServiceHttpClientConfig ngClientConfig;
@@ -113,11 +119,17 @@ public class DiscoveryService {
     if (isNotEmpty(discoveryInput.getEntities())) {
       for (DiscoverEntityInput child : discoveryInput.getEntities()) {
         String appId = child.getAppId();
-        ngMigrationService = migrationFactory.getMethod(child.getType());
-        DiscoveryNode node = ngMigrationService.discover(accountId, child.getAppId(), child.getEntityId());
+        String entityId = child.getEntityId();
+        NGMigrationEntityType entityType = child.getType();
+        if (NGMigrationEntityType.APPLICATION.equals(entityType)) {
+          // ensure that appId & entityId are same if we are tying to migrate an app.
+          appId = entityId;
+        }
+        ngMigrationService = migrationFactory.getMethod(entityType);
+        DiscoveryNode node = ngMigrationService.discover(accountId, appId, entityId);
         if (node == null) {
           throw new IllegalStateException(
-              String.format("Entity not found! - Type: %s & ID: %s", child.getType(), child.getEntityId()));
+              String.format("Entity not found! - Type: %s & ID: %s", child.getType(), entityId));
         }
         // We add the node the dummy head's children & to the graph
         head.getChildren().add(node.getEntityNode().getEntityId());
@@ -134,6 +146,10 @@ public class DiscoveryService {
 
   public DiscoveryResult discover(
       String accountId, String appId, String entityId, NGMigrationEntityType entityType, boolean shouldExportImg) {
+    if (NGMigrationEntityType.APPLICATION.equals(entityType)) {
+      // ensure that appId & entityId are same if we are tying to migrate an app.
+      appId = entityId;
+    }
     Map<CgEntityId, CgEntityNode> entities = new HashMap<>();
     Map<CgEntityId, Set<CgEntityId>> graph = new HashMap<>();
 
@@ -172,17 +188,36 @@ public class DiscoveryService {
     return MigrationInputResult.builder().inputs(inputMap).build();
   }
 
-  public List<NGYamlFile> migrateEntity(String auth, MigrationInputDTO inputDTO, DiscoveryResult discoveryResult) {
-    Map<CgEntityId, CgEntityNode> entities = discoveryResult.getEntities();
-    Map<CgEntityId, Set<CgEntityId>> graph = discoveryResult.getLinks();
-    CgEntityId root = discoveryResult.getRoot();
-    Map<CgEntityId, NgEntityDetail> migratedEntities = new HashMap<>();
+  public StreamingOutput exportYamlFilesAsZip(MigrationInputDTO inputDTO, DiscoveryResult discoveryResult) {
+    List<NGYamlFile> ngYamlFiles = migrateEntity(inputDTO, discoveryResult);
+    String folder = "/tmp/" + UUIDGenerator.generateUuid();
+    exportZip(ngYamlFiles, folder);
+    return output -> {
+      try {
+        byte[] data = Files.readAllBytes(Paths.get(folder + "/yamls.zip"));
+        output.write(data);
+        output.flush();
+      } catch (Exception e) {
+        throw new IllegalStateException("Could not export zip file");
+      }
+    };
+  }
 
-    Map<CgEntityId, Set<CgEntityId>> leafTracker =
-        graph.entrySet().stream().collect(Collectors.toMap(Entry::getKey, e -> Sets.newHashSet(e.getValue())));
-    List<NGYamlFile> ngYamlFiles = getAllYamlFiles(inputDTO, entities, graph, root, migratedEntities, leafTracker);
-    exportZip(ngYamlFiles);
-    createEntities(auth, inputDTO, ngYamlFiles);
+  private List<NGYamlFile> migrateEntity(MigrationInputDTO inputDTO, DiscoveryResult discoveryResult) {
+    Map<CgEntityId, NgEntityDetail> migratedEntities = new HashMap<>();
+    Map<CgEntityId, Set<CgEntityId>> leafTracker = discoveryResult.getLinks().entrySet().stream().collect(
+        Collectors.toMap(Entry::getKey, e -> Sets.newHashSet(e.getValue())));
+    return getAllYamlFiles(inputDTO, discoveryResult.getEntities(), discoveryResult.getLinks(),
+        discoveryResult.getRoot(), migratedEntities, leafTracker);
+  }
+
+  public List<NGYamlFile> migrateEntity(
+      String auth, MigrationInputDTO inputDTO, DiscoveryResult discoveryResult, boolean dryRun) {
+    List<NGYamlFile> ngYamlFiles = migrateEntity(inputDTO, discoveryResult);
+    exportZip(ngYamlFiles, DEFAULT_ZIP_DIRECTORY);
+    if (!dryRun) {
+      createEntities(auth, inputDTO, ngYamlFiles);
+    }
     return ngYamlFiles;
   }
 
@@ -216,17 +251,17 @@ public class DiscoveryService {
     }
   }
 
-  private void exportZip(List<NGYamlFile> ngYamlFiles) {
+  private void exportZip(List<NGYamlFile> ngYamlFiles, String dirName) {
     // Write the files to ZIP folder
     try {
-      File directory = new File("/tmp/zip-output");
+      File directory = new File(dirName);
       if (directory.exists()) {
         FileUtils.cleanDirectory(directory);
       }
     } catch (IOException e) {
       log.warn("Failed to clean output directory");
     }
-    File zipFile = new File("/tmp/zip-output/yamls.zip");
+    File zipFile = new File(dirName + "/yamls.zip");
     zipFile.getParentFile().mkdirs();
     try (ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zipFile))) {
       for (NGYamlFile file : ngYamlFiles) {

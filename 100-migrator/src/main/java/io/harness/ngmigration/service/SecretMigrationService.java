@@ -66,6 +66,9 @@ public class SecretMigrationService implements NgMigrationService {
         .orgIdentifier(secretYaml.getOrgIdentifier())
         .projectIdentifier(secretYaml.getProjectIdentifier())
         .identifier(secretYaml.getIdentifier())
+        .scope(MigratorMappingService.getScope(secretYaml.getOrgIdentifier(), secretYaml.getProjectIdentifier()))
+        .fullyQualifiedIdentifier(MigratorMappingService.getFullyQualifiedIdentifier(basicInfo.getAccountId(),
+            secretYaml.getOrgIdentifier(), secretYaml.getProjectIdentifier(), secretYaml.getIdentifier()))
         .build();
   }
 

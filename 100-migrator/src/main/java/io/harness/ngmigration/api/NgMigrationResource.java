@@ -9,6 +9,7 @@ package io.harness.ngmigration.api;
 
 import static io.harness.annotations.dev.HarnessTeam.CDC;
 
+import static java.lang.String.format;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import io.harness.annotations.dev.OwnedBy;
@@ -35,6 +36,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
 
 @OwnedBy(CDC)
@@ -73,9 +76,23 @@ public class NgMigrationResource {
   public RestResponse<List<NGYamlFile>> getMigratedFiles(@HeaderParam("Authorization") String auth,
       @QueryParam("entityId") String entityId, @QueryParam("appId") String appId,
       @QueryParam("accountId") String accountId, @QueryParam("entityType") NGMigrationEntityType entityType,
+      @QueryParam("dryRun") boolean dryRun, MigrationInputDTO inputDTO) {
+    DiscoveryResult result = discoveryService.discover(accountId, appId, entityId, entityType, false);
+    return new RestResponse<>(discoveryService.migrateEntity(auth, inputDTO, result, dryRun));
+  }
+
+  @POST
+  @Path("/export")
+  @Timed
+  @ExceptionMetered
+  public Response exportZippedYamlFiles(@HeaderParam("Authorization") String auth,
+      @QueryParam("entityId") String entityId, @QueryParam("appId") String appId,
+      @QueryParam("accountId") String accountId, @QueryParam("entityType") NGMigrationEntityType entityType,
       MigrationInputDTO inputDTO) {
     DiscoveryResult result = discoveryService.discover(accountId, appId, entityId, entityType, false);
-    return new RestResponse<>(discoveryService.migrateEntity(auth, inputDTO, result));
+    return Response.ok(discoveryService.exportYamlFilesAsZip(inputDTO, result), MediaType.APPLICATION_OCTET_STREAM)
+        .header("content-disposition", format("attachment; filename = %s_%s_%s.zip", accountId, entityId, entityType))
+        .build();
   }
 
   @GET

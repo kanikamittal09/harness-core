@@ -11,6 +11,7 @@ import static io.harness.annotations.dev.HarnessTeam.CDC;
 
 import io.harness.annotation.HarnessEntity;
 import io.harness.annotations.dev.OwnedBy;
+import io.harness.encryption.Scope;
 import io.harness.mongo.index.FdIndex;
 import io.harness.persistence.AccountAccess;
 import io.harness.persistence.CreatedAtAware;
@@ -56,6 +57,8 @@ public class MigratedEntityMapping implements PersistentEntity, UuidAware, Creat
   @FdIndex @SchemaIgnore private String orgIdentifier;
   @FdIndex @SchemaIgnore private String projectIdentifier;
   @FdIndex @SchemaIgnore private String identifier;
+  @FdIndex @SchemaIgnore private Scope scope;
+  @FdIndex @SchemaIgnore private String fullyQualifiedIdentifier;
 
   @SchemaIgnore private EmbeddedUser createdBy;
   @SchemaIgnore private long createdAt;

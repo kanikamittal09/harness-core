@@ -60,6 +60,11 @@ public class SecretManagerMigrationService implements NgMigrationService {
         .orgIdentifier(secretManagerInfo.getOrgIdentifier())
         .projectIdentifier(secretManagerInfo.getProjectIdentifier())
         .identifier(secretManagerInfo.getIdentifier())
+        .scope(MigratorMappingService.getScope(
+            secretManagerInfo.getOrgIdentifier(), secretManagerInfo.getProjectIdentifier()))
+        .fullyQualifiedIdentifier(MigratorMappingService.getFullyQualifiedIdentifier(basicInfo.getAccountId(),
+            secretManagerInfo.getOrgIdentifier(), secretManagerInfo.getProjectIdentifier(),
+            secretManagerInfo.getIdentifier()))
         .build();
   }
 

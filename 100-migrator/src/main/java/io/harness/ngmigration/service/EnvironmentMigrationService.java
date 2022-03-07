@@ -16,6 +16,7 @@ import io.harness.annotations.dev.OwnedBy;
 import io.harness.beans.MigratedEntityMapping;
 import io.harness.cdng.environment.yaml.EnvironmentYaml;
 import io.harness.data.structure.EmptyPredicate;
+import io.harness.encryption.Scope;
 import io.harness.ng.core.environment.beans.EnvironmentType;
 import io.harness.ngmigration.beans.BaseEntityInput;
 import io.harness.ngmigration.beans.BaseInputDefinition;
@@ -69,6 +70,9 @@ public class EnvironmentMigrationService implements NgMigrationService {
         .orgIdentifier(null)
         .projectIdentifier(null)
         .identifier(environmentYaml.getIdentifier())
+        .scope(Scope.PROJECT)
+        .fullyQualifiedIdentifier(MigratorMappingService.getFullyQualifiedIdentifier(
+            basicInfo.getAccountId(), null, null, environmentYaml.getIdentifier()))
         .build();
   }
 

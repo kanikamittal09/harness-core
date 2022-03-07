@@ -66,6 +66,9 @@ public class ConnectorMigrationService implements NgMigrationService {
         .orgIdentifier(connectorInfo.getOrgIdentifier())
         .projectIdentifier(connectorInfo.getProjectIdentifier())
         .identifier(connectorInfo.getIdentifier())
+        .scope(MigratorMappingService.getScope(connectorInfo.getOrgIdentifier(), connectorInfo.getProjectIdentifier()))
+        .fullyQualifiedIdentifier(MigratorMappingService.getFullyQualifiedIdentifier(basicInfo.getAccountId(),
+            connectorInfo.getOrgIdentifier(), connectorInfo.getProjectIdentifier(), connectorInfo.getIdentifier()))
         .build();
   }
 

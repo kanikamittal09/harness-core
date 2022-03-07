@@ -72,6 +72,11 @@ public class PipelineMigrationService implements NgMigrationService {
         .orgIdentifier(pipelineInfoConfig.getOrgIdentifier())
         .projectIdentifier(pipelineInfoConfig.getProjectIdentifier())
         .identifier(pipelineInfoConfig.getIdentifier())
+        .scope(MigratorMappingService.getScope(
+            pipelineInfoConfig.getOrgIdentifier(), pipelineInfoConfig.getProjectIdentifier()))
+        .fullyQualifiedIdentifier(MigratorMappingService.getFullyQualifiedIdentifier(basicInfo.getAccountId(),
+            pipelineInfoConfig.getOrgIdentifier(), pipelineInfoConfig.getProjectIdentifier(),
+            pipelineInfoConfig.getIdentifier()))
         .build();
   }
 

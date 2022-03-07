@@ -12,6 +12,7 @@ import io.harness.annotations.dev.OwnedBy;
 import io.harness.beans.MigratedEntityMapping;
 import io.harness.beans.MigratedEntityMapping.MigratedEntityMappingKeys;
 import io.harness.data.structure.EmptyPredicate;
+import io.harness.encryption.Scope;
 import io.harness.persistence.HPersistence;
 
 import software.wings.ngmigration.CgBasicInfo;
@@ -29,6 +30,28 @@ public class MigratorMappingService {
   @Inject private NgMigrationFactory ngMigrationFactory;
   @Inject private HPersistence hPersistence;
 
+  public static String getFullyQualifiedIdentifier(String accountId, String org, String project, String identifier) {
+    StringBuilder stringBuilder = new StringBuilder();
+    stringBuilder.append(accountId).append("/");
+    if (StringUtils.isNotBlank(org)) {
+      stringBuilder.append(org).append("/");
+    }
+    if (StringUtils.isNotBlank(project)) {
+      stringBuilder.append(project).append("/");
+    }
+    return stringBuilder.append(identifier).toString();
+  }
+
+  public static Scope getScope(String org, String project) {
+    if (StringUtils.isNotBlank(project)) {
+      return Scope.PROJECT;
+    }
+    if (StringUtils.isNotBlank(org)) {
+      return Scope.ORG;
+    }
+    return Scope.ACCOUNT;
+  }
+
   public void mapCgNgEntity(NGYamlFile yamlFile) {
     MigratedEntityMapping mapping = ngMigrationFactory.getMethod(yamlFile.getType()).generateMappingEntity(yamlFile);
     if (!doesMappingExist(yamlFile)) {
@@ -45,15 +68,11 @@ public class MigratorMappingService {
             .filter(MigratedEntityMappingKeys.cgEntityId, basicInfo.getId())
             .filter(MigratedEntityMappingKeys.entityType, basicInfo.getType().name())
             .filter(MigratedEntityMappingKeys.accountIdentifier, basicInfo.getAccountId())
-            .filter(MigratedEntityMappingKeys.identifier, mapping.getIdentifier());
+            .filter(MigratedEntityMappingKeys.identifier, mapping.getIdentifier())
+            .filter(
+                MigratedEntityMappingKeys.scope, getScope(mapping.getOrgIdentifier(), mapping.getProjectIdentifier()));
     if (StringUtils.isNotBlank(basicInfo.getAppId())) {
       query.filter(MigratedEntityMappingKeys.appId, basicInfo.getAppId());
-    }
-    if (StringUtils.isNotBlank(mapping.getOrgIdentifier())) {
-      query.filter(MigratedEntityMappingKeys.orgIdentifier, mapping.getOrgIdentifier());
-    }
-    if (StringUtils.isNotBlank(mapping.getProjectIdentifier())) {
-      query.filter(MigratedEntityMappingKeys.projectIdentifier, mapping.getProjectIdentifier());
     }
     return EmptyPredicate.isNotEmpty(query.asList());
   }
