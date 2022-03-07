@@ -22,7 +22,6 @@ import io.harness.execution.NodeExecution;
 import io.harness.execution.NodeExecution.NodeExecutionKeys;
 import io.harness.pms.contracts.ambiance.Ambiance;
 import io.harness.pms.contracts.execution.Status;
-import io.harness.pms.execution.utils.StatusUtils;
 import io.harness.rule.Owner;
 
 import com.google.common.collect.Sets;
