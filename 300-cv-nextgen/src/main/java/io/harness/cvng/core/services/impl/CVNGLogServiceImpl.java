@@ -23,6 +23,7 @@ import io.harness.cvng.beans.CVMonitoringCategory;
 import io.harness.cvng.beans.cvnglog.ApiCallLogDTO;
 import io.harness.cvng.beans.cvnglog.CVNGLogDTO;
 import io.harness.cvng.beans.cvnglog.CVNGLogType;
+import io.harness.cvng.beans.cvnglog.ExecutionLogDTO;
 import io.harness.cvng.beans.cvnglog.TraceableType;
 import io.harness.cvng.core.beans.params.PageParams;
 import io.harness.cvng.core.entities.CVNGLog;
@@ -154,18 +155,40 @@ public class CVNGLogServiceImpl implements CVNGLogService {
     });
 
     if (errorLogsOnly) {
-      final List<ApiCallLogDTO> apiCallLogDTOS = new ArrayList<>();
-      cvngLogDTOs.forEach(cvngLogDTO -> apiCallLogDTOS.add((ApiCallLogDTO) cvngLogDTO));
+      /*switch (logType) {
+        case CVNGLogType.API_CALL_LOG:
+          return ;
+        case :
+          return ;
+        default:
+          throw new IllegalStateException("CVNG Logs: Log Type cannot be null");
+      }*/
+      if (logType.equals(CVNGLogType.API_CALL_LOG)) {
+        final List<ApiCallLogDTO> apiCallLogDTOS = new ArrayList<>();
+        cvngLogDTOs.forEach(cvngLogDTO -> apiCallLogDTOS.add((ApiCallLogDTO) cvngLogDTO));
 
-      List<ApiCallLogDTO> apiCallLogDTOsFiltered =
-          apiCallLogDTOS.stream()
-              .filter(apiCallLogDTO
-                  -> Integer.parseInt(apiCallLogDTO.getResponses().get(0).getValue()) >= ERROR_RESPONSE_CODE)
-              .collect(Collectors.toList());
-      cvngLogDTOs.clear();
-      cvngLogDTOs.addAll(apiCallLogDTOsFiltered);
+        List<ApiCallLogDTO> apiCallLogDTOsFiltered =
+            apiCallLogDTOS.stream()
+                .filter(apiCallLogDTO
+                    -> Integer.parseInt(apiCallLogDTO.getResponses().get(0).getValue()) >= ERROR_RESPONSE_CODE)
+                .collect(Collectors.toList());
+        cvngLogDTOs.clear();
+        cvngLogDTOs.addAll(apiCallLogDTOsFiltered);
+      } else if (logType.equals(CVNGLogType.EXECUTION_LOG)) {
+        final List<ExecutionLogDTO> executionLogDTOS = new ArrayList<>();
+        cvngLogDTOs.forEach(cvngLogDTO -> executionLogDTOS.add((ExecutionLogDTO) cvngLogDTO));
+
+        List<ExecutionLogDTO> executionLogDTOsFiltered =
+            executionLogDTOS.stream()
+                .filter(executionLogDTO -> executionLogDTO.getLogLevel().equals(ExecutionLogDTO.LogLevel.ERROR))
+                .collect(Collectors.toList());
+        cvngLogDTOs.clear();
+        cvngLogDTOs.addAll(executionLogDTOsFiltered);
+      }
     }
 
+    /*//cvngLogDTOs.forEach(cvngLogDTO -> Collections.sort(cvngLogDTOs, new CVNGLogRecordComparator()));
+    Collections.sort(cvngLogDTOs, new CVNGLogRecordComparator())*/
     return PageUtils.offsetAndLimit(cvngLogDTOs, pageParams.getPage(), pageParams.getSize());
   }
 
