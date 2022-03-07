@@ -27,17 +27,15 @@ public class ExecutionLogRecord extends CVNGLogRecord {
   private ExecutionLogDTO.LogLevel logLevel;
 
   public static CVNGLogRecord toCVNGLogRecord(CVNGLogDTO cvngLogDTO) {
-    ExecutionLogRecord executionLogRecord = ExecutionLogRecord.builder()
-                                                .log(((ExecutionLogDTO) cvngLogDTO).getLog())
-                                                .logLevel(((ExecutionLogDTO) cvngLogDTO).getLogLevel())
-                                                .build();
-    return executionLogRecord;
+    return ExecutionLogRecord.builder()
+        .log(((ExecutionLogDTO) cvngLogDTO).getLog())
+        .logLevel(((ExecutionLogDTO) cvngLogDTO).getLogLevel())
+        .build();
   }
 
   @Override
   public CVNGLogDTO toCVNGLogDTO() {
-    ExecutionLogDTO executionLogDTO = ExecutionLogDTO.builder().log(log).logLevel(logLevel).build();
-    return executionLogDTO;
+    return ExecutionLogDTO.builder().log(log).logLevel(logLevel).build();
   }
 
   @Override
