@@ -356,8 +356,6 @@ public class CVNGLogServiceImplTest extends CvNextGenTestBase {
   }
 
   private CVNGLogDTO createExecutionLogDTOVerification() {
-    requestTime = requestTime.plusSeconds(10);
-    responseTime = responseTime.plusSeconds(10);
     return ExecutionLogDTO.builder()
         .accountId(accountId)
         .traceableId(traceableId)

@@ -7,8 +7,6 @@
 
 package io.harness.cvng.core.entities.cvnglogs;
 
-import io.harness.annotations.dev.HarnessTeam;
-import io.harness.annotations.dev.OwnedBy;
 import io.harness.cvng.beans.cvnglog.CVNGLogDTO;
 import io.harness.cvng.beans.cvnglog.ExecutionLogDTO;
 import io.harness.metrics.service.api.MetricService;
@@ -20,7 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @Data
 @Builder
-@OwnedBy(HarnessTeam.CV)
 @Slf4j
 public class ExecutionLogRecord extends CVNGLogRecord {
   private String log;

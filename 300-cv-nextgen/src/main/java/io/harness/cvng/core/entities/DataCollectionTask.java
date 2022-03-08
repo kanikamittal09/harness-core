@@ -55,8 +55,8 @@ import org.mongodb.morphia.annotations.PrePersist;
 @Entity(value = "dataCollectionTasks")
 @HarnessEntity(exportable = false)
 @StoreIn(DbAliases.CVNG)
-public abstract class DataCollectionTask
-    implements PersistentEntity, UuidAware, CreatedAtAware, UpdatedAtAware, AccountAccess, PersistentRegularIterable, VerificationTaskInstance {
+public abstract class DataCollectionTask implements PersistentEntity, UuidAware, CreatedAtAware, UpdatedAtAware,
+                                                    AccountAccess, PersistentRegularIterable, VerificationTaskInstance {
   public static List<MongoIndex> mongoIndexes() {
     return ImmutableList.<MongoIndex>builder()
         .add(CompoundMongoIndex.builder()
@@ -158,6 +158,13 @@ public abstract class DataCollectionTask
     return Duration.between(validAfter, lastPickedAt);
   }
   public ExecutionLogDTO.LogLevel getLogLevel() {
-    return ExecutionLogDTO.LogLevel.ERROR; // TODO: implement
+    if (DataCollectionExecutionStatus.getFailedStatuses().contains(status)
+        || DataCollectionExecutionStatus.ABORTED.equals(status)) {
+      return ExecutionLogDTO.LogLevel.ERROR;
+    } else if (DataCollectionExecutionStatus.getNonFinalStatues().contains(status)) {
+      return ExecutionLogDTO.LogLevel.WARN;
+    } else {
+      return ExecutionLogDTO.LogLevel.INFO;
+    }
   }
 }
