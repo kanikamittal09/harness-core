@@ -1299,7 +1299,7 @@ public class UserServiceImpl implements UserService {
   }
 
   private void updateEmailOfUser(User user, String newEmail) {
-    if (user != null) {
+    if (user != null && isNotEmpty(user.getUuid())) {
       UpdateOperations<User> updateOperations = wingsPersistence.createUpdateOperations(User.class);
       setUnset(updateOperations, UserKeys.email, newEmail);
       Query<User> query = wingsPersistence.createQuery(User.class).filter("_id", user.getUuid());
@@ -1330,8 +1330,9 @@ public class UserServiceImpl implements UserService {
       user = anUser().build();
     }
 
-    if (featureFlagService.isEnabled(FeatureName.LDAP_USER_ID_SYNC, accountId) && isNotEmpty(userInvite.getEmail())
-        && !userInvite.getEmail().equals(user.getEmail())) {
+    String incomingEmail = userInvite.getEmail();
+    if (featureFlagService.isEnabled(FeatureName.LDAP_USER_ID_SYNC, accountId) && isNotEmpty(incomingEmail)
+        && isNotEmpty(user.getEmail()) && !incomingEmail.trim().toLowerCase().equals(user.getEmail())) {
       log.info("Updating email Id for user {} with current mail {} and new email {}", user.getUuid(), user.getEmail(),
           userInvite.getEmail().trim().toLowerCase());
       updateEmailOfUser(user, userInvite.getEmail().trim().toLowerCase());
