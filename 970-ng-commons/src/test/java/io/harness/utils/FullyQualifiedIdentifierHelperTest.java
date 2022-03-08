@@ -57,7 +57,7 @@ public class FullyQualifiedIdentifierHelperTest extends CategoryTest {
   @Owner(developers = BOOPESH)
   @Category(UnitTests.class)
   public void testNoOrgIdentiferForPrjectConnectorThrowsException() {
-    String connectorIdentifier = randomAlphabetic(6);
+    String connectorIdentifier = randomAlphabetic(7);
     assertThatThrownBy(()
                            -> FullyQualifiedIdentifierHelper.getFullyQualifiedIdentifier(
                                randomAlphabetic(10), null, randomAlphabetic(8), connectorIdentifier))
