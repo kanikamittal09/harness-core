@@ -149,12 +149,12 @@ public class ResourceGroupServiceImpl implements ResourceGroupService {
     if (isNotEmpty(resourceGroupFilterDTO.getResourceSelectorFilterList())) {
       List<Criteria> resourceSelectorCriteria = new ArrayList<>();
       resourceGroupFilterDTO.getResourceSelectorFilterList().forEach(resourceSelectorFilter
-          -> resourceSelectorCriteria.add(Criteria.where(ResourceGroupKeys.resourceFilter)
-                                              .where(ResourceFilterKeys.resources)
-                                              .elemMatch(Criteria.where(ResourceSelectorKeys.resourceType)
-                                                             .is(resourceSelectorFilter.getResourceType())
-                                                             .and(ResourceSelectorKeys.identifiers)
-                                                             .is(resourceSelectorFilter.getResourceIdentifier()))));
+          -> resourceSelectorCriteria.add(
+              Criteria.where(ResourceGroupKeys.resourceFilter + "." + ResourceFilterKeys.resources)
+                  .elemMatch(Criteria.where(ResourceSelectorKeys.resourceType)
+                                 .is(resourceSelectorFilter.getResourceType())
+                                 .and(ResourceSelectorKeys.identifiers)
+                                 .is(resourceSelectorFilter.getResourceIdentifier()))));
       andOperatorCriteriaList.add(new Criteria().orOperator(resourceSelectorCriteria.toArray(new Criteria[0])));
     }
 

@@ -13,6 +13,9 @@ import io.harness.annotation.StoreIn;
 import io.harness.annotations.dev.OwnedBy;
 import io.harness.beans.EmbeddedUser;
 import io.harness.iterator.PersistentRegularIterable;
+import io.harness.mongo.CollationLocale;
+import io.harness.mongo.CollationStrength;
+import io.harness.mongo.index.Collation;
 import io.harness.mongo.index.CompoundMongoIndex;
 import io.harness.mongo.index.FdIndex;
 import io.harness.mongo.index.MongoIndex;
@@ -52,6 +55,16 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class ResourceGroup implements PersistentRegularIterable, PersistentEntity {
   public static List<MongoIndex> mongoIndexes() {
     return ImmutableList.<MongoIndex>builder()
+        .add(CompoundMongoIndex.builder()
+                 .name("resourceGroupPrimaryKey_resourceFilter")
+                 .field(ResourceGroupKeys.accountIdentifier)
+                 .field(ResourceGroupKeys.orgIdentifier)
+                 .field(ResourceGroupKeys.projectIdentifier)
+                 .field(ResourceGroupKeys.identifier)
+                 .field(ResourceGroupKeys.resourceFilter + "." + ResourceFilter.ResourceFilterKeys.resources)
+                 .collation(
+                     Collation.builder().locale(CollationLocale.ENGLISH).strength(CollationStrength.PRIMARY).build())
+                 .build())
         .add(CompoundMongoIndex.builder()
                  .name("uniqueResourceGroupV2")
                  .field(ResourceGroupKeys.accountIdentifier)
