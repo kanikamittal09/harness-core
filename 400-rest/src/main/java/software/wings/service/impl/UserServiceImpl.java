@@ -1333,10 +1333,11 @@ public class UserServiceImpl implements UserService {
     String incomingEmail = userInvite.getEmail();
     if (featureFlagService.isEnabled(FeatureName.LDAP_USER_ID_SYNC, accountId) && isNotEmpty(incomingEmail)
         && isNotEmpty(user.getEmail()) && !incomingEmail.trim().toLowerCase().equals(user.getEmail())) {
+      String incomingEmailInLower = incomingEmail.trim().toLowerCase();
       log.info("Updating email Id for user {} with current mail {} and new email {}", user.getUuid(), user.getEmail(),
-          userInvite.getEmail().trim().toLowerCase());
-      updateEmailOfUser(user, userInvite.getEmail().trim().toLowerCase());
-      user.setEmail(userInvite.getEmail().trim().toLowerCase());
+          incomingEmailInLower);
+      updateEmailOfUser(user, incomingEmailInLower);
+      user.setEmail(incomingEmailInLower);
     }
 
     List<UserGroup> userGroups = userGroupService.getUserGroupsFromUserInvite(userInvite);
