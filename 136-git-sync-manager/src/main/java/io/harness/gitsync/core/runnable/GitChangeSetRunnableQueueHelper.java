@@ -101,7 +101,7 @@ public class GitChangeSetRunnableQueueHelper {
   public class YamlChangeSetComparator implements Comparator<YamlChangeSet> {
     Map<String, Integer> statusOrder = new HashMap<String, Integer>() {
       {
-        put(YamlChangeSetEventType.BRANCH_CREATE.name(), 1);
+        put(YamlChangeSetEventType.BRANCH_CREATE.nameAbstractGitSyncSdkModule(), 1);
         put(YamlChangeSetEventType.BRANCH_SYNC.name(), 2);
         put(YamlChangeSetEventType.BRANCH_PUSH.name(), 3);
       }
