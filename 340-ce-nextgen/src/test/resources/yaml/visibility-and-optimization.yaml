@@ -408,6 +408,7 @@ spec:
           name: webhook
       volumes:
       - emptyDir: {}
+        name: serving-certs
       serviceAccountName: harness-autostopping-sa
 
 ---
