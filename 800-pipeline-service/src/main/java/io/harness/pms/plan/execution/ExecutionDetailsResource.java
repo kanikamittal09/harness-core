@@ -171,17 +171,20 @@ public class ExecutionDetailsResource {
 
   @GET
   @Path("/v2/{planExecutionId}")
-  @ApiOperation(value = "Gets Execution Detail", nickname = "getExecutionDetail")
-  @Operation(operationId = "getExecutionDetail",
-      summary = "Get the Pipeline Execution details for given PlanExecution Id",
+  @ApiOperation(value = "Gets Execution Detail V2", nickname = "getExecutionDetailV2")
+  @Operation(operationId = "getExecutionDetailV2",
+      summary =
+          "Get the Pipeline Execution details for given PlanExecution Id without full graph unless specified explicitly",
       responses =
       {
-        @io.swagger.v3.oas.annotations.responses.ApiResponse(
-            responseCode = "default", description = "Return the Pipeline Execution details for given PlanExecution Id")
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "default",
+            description =
+                "Return the Pipeline Execution details for given PlanExecution Id without full graph if stageNodeId is null")
       })
   public ResponseDTO<PipelineExecutionDetailDTO>
-  getExecutionDetail(@NotNull @Parameter(description = PipelineResourceConstants.ACCOUNT_PARAM_MESSAGE, required = true)
-                     @QueryParam(NGCommonEntityConstants.ACCOUNT_KEY) @AccountIdentifier String accountId,
+  getExecutionDetailV2(
+      @NotNull @Parameter(description = PipelineResourceConstants.ACCOUNT_PARAM_MESSAGE, required = true) @QueryParam(
+          NGCommonEntityConstants.ACCOUNT_KEY) @AccountIdentifier String accountId,
       @Parameter(description = PipelineResourceConstants.ORG_PARAM_MESSAGE, required = true) @NotNull @QueryParam(
           NGCommonEntityConstants.ORG_KEY) @OrgIdentifier String orgId,
       @NotNull @Parameter(description = PipelineResourceConstants.PROJECT_PARAM_MESSAGE, required = true) @QueryParam(
