@@ -1,0 +1,20 @@
+version: v1
+directories:
+  - 160-stress-tester/src/main/proto
+  - 400-rest/src/main/proto
+  - 890-pms-contracts/src/main/proto
+  - 920-delegate-service-beans/src/main/proto
+  - 950-wait-engine/src/proto
+  - 950-delegate-tasks-beans/src/main/proto
+  - 952-remote-observers/src/main/proto
+  - 953-git-sync-commons/src/main/proto
+  - 953-events-api/src/main/proto
+  - 955-delegate-beans/src/main/proto
+  - 959-timeout-engine/src/main/proto
+  - 960-notification-beans/src/main/proto
+  - 970-grpc/src/main/proto
+  - 970-api-services-beans/src/main/proto
+  - 980-commons/src/main/proto
+  - product/ci/scm/proto
+  - product/ci/addon/proto
+  - product/ci/engine/proto/
