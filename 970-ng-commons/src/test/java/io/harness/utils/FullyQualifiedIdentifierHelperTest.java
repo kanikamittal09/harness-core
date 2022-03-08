@@ -7,9 +7,9 @@
 
 package io.harness.utils;
 
-import static io.harness.rule.OwnerRule.DEEPAK;
-import static io.harness.rule.OwnerRule.NAMAN;
+import static io.harness.rule.OwnerRule.*;
 
+import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -50,6 +50,17 @@ public class FullyQualifiedIdentifierHelperTest extends CategoryTest {
     String connectorIdentifier = "connectorIdentifier";
     assertThatThrownBy(
         () -> FullyQualifiedIdentifierHelper.getFullyQualifiedIdentifier(null, null, null, connectorIdentifier))
+        .isInstanceOf(InvalidRequestException.class);
+  }
+
+  @Test
+  @Owner(developers = BOOPESH)
+  @Category(UnitTests.class)
+  public void testNoOrgIdentiferForPrjectConnectorThrowsException() {
+    String connectorIdentifier = randomAlphabetic(5);
+    assertThatThrownBy(()
+                           -> FullyQualifiedIdentifierHelper.getFullyQualifiedIdentifier(
+                               randomAlphabetic(10), null, randomAlphabetic(8), connectorIdentifier))
         .isInstanceOf(InvalidRequestException.class);
   }
 }
