@@ -13,6 +13,7 @@ import io.harness.annotation.HarnessEntity;
 import io.harness.annotation.StoreIn;
 import io.harness.cvng.beans.DataCollectionExecutionStatus;
 import io.harness.cvng.beans.DataCollectionInfo;
+import io.harness.cvng.beans.cvnglog.ExecutionLogDTO;
 import io.harness.iterator.PersistentRegularIterable;
 import io.harness.mongo.index.CompoundMongoIndex;
 import io.harness.mongo.index.FdIndex;
@@ -55,7 +56,7 @@ import org.mongodb.morphia.annotations.PrePersist;
 @HarnessEntity(exportable = false)
 @StoreIn(DbAliases.CVNG)
 public abstract class DataCollectionTask
-    implements PersistentEntity, UuidAware, CreatedAtAware, UpdatedAtAware, AccountAccess, PersistentRegularIterable {
+    implements PersistentEntity, UuidAware, CreatedAtAware, UpdatedAtAware, AccountAccess, PersistentRegularIterable, VerificationTaskInstance {
   public static List<MongoIndex> mongoIndexes() {
     return ImmutableList.<MongoIndex>builder()
         .add(CompoundMongoIndex.builder()
@@ -155,5 +156,8 @@ public abstract class DataCollectionTask
     Preconditions.checkNotNull(lastPickedAt,
         "Last picked up needs to be not null for wait time calculation for dataCollectionTaskId: " + uuid);
     return Duration.between(validAfter, lastPickedAt);
+  }
+  public ExecutionLogDTO.LogLevel getLogLevel() {
+    return ExecutionLogDTO.LogLevel.ERROR; // TODO: implement
   }
 }

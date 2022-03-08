@@ -27,6 +27,7 @@ import io.harness.cvng.core.entities.MetricCVConfig;
 import io.harness.cvng.core.services.api.CVNGLogService;
 import io.harness.cvng.core.services.api.DataCollectionTaskManagementService;
 import io.harness.cvng.core.services.api.DataCollectionTaskService;
+import io.harness.cvng.core.services.api.ExecutionLogService;
 import io.harness.cvng.core.services.api.MetricPackService;
 import io.harness.cvng.core.services.api.MonitoringSourcePerpetualTaskService;
 import io.harness.cvng.metrics.CVNGMetricsUtils;
@@ -68,7 +69,7 @@ public class DataCollectionTaskServiceImpl implements DataCollectionTaskService 
   @Inject
   private Map<DataCollectionTask.Type, DataCollectionTaskManagementService>
       dataCollectionTaskManagementServiceMapBinder;
-  @Inject private CVNGLogService cvngLogService;
+  @Inject private ExecutionLogService executionLogService;
 
   // TODO: this is creating reverse dependency. Find a way to get rid of this dependency.
   // Probabally by moving ProgressLog concept to a separate service and model.
@@ -207,29 +208,7 @@ public class DataCollectionTaskServiceImpl implements DataCollectionTaskService 
     } else {
       retry(dataCollectionTask);
     }
-
-    ExecutionLogDTO executionLogDTO =
-        ExecutionLogDTO.builder()
-            .accountId(dataCollectionTask.getAccountId())
-            .traceableId(dataCollectionTask.getVerificationTaskId())
-            .createdAt(dataCollectionTask.getCreatedAt())
-            .startTime(dataCollectionTask.getStartTime().toEpochMilli())
-            .endTime(dataCollectionTask.getEndTime().toEpochMilli())
-            .traceableType(TraceableType.VERIFICATION_TASK) // TODO: make traceableType inclusive for all 3: {
-                                                            // SERVICE_GUARD, DEPLOYMENT, SLI }
-            .build();
-    if (DataCollectionExecutionStatus.getFailedStatuses().contains(result.getStatus())) {
-      executionLogDTO.setLog("Data collection failed for dataCollectionTaskID: " + result.getDataCollectionTaskId());
-      executionLogDTO.setLogLevel(ExecutionLogDTO.LogLevel.ERROR);
-    } else if (DataCollectionExecutionStatus.getNonFinalStatues().contains(result.getStatus())) {
-      executionLogDTO.setLog("Retrying data collection for dataCollectionTaskID: " + result.getDataCollectionTaskId());
-      executionLogDTO.setLogLevel(ExecutionLogDTO.LogLevel.WARN);
-    } else {
-      executionLogDTO.setLog(
-          "Data collection successful for dataCollectionTaskID: " + result.getDataCollectionTaskId());
-      executionLogDTO.setLogLevel(ExecutionLogDTO.LogLevel.INFO);
-    }
-    cvngLogService.save(Arrays.asList(executionLogDTO));
+    executionLogService.getLogger(dataCollectionTask).log(dataCollectionTask.getLogLevel(), "Data collection task status: " + dataCollectionTask.getStatus());
   }
 
   private void recordMetricsOnUpdateStatus(DataCollectionTask dataCollectionTask) {
