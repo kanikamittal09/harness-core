@@ -41,9 +41,11 @@ public class FullSyncMessageListener implements MessageListener {
     log.info("Processing the Full Sync event with the id {}", messageId);
     try (AutoLogContext ignore1 = new NgEventLogContext(messageId, OVERRIDE_ERROR)) {
       final FullSyncEventRequest fullSyncEventRequest = getFullSyncEventRequest(message);
-      final EntityScopeInfo gitConfigScope = fullSyncEventRequest.getGitConfigScope();
-      Map<String, String> logContext = FullSyncLogContextHelper.getContext(gitConfigScope.getAccountId(),
-          gitConfigScope.getOrgId().getValue(), gitConfigScope.getProjectId().getValue(), messageId);
+      final EntityScopeInfo entityScopeInfo = fullSyncEventRequest.getGitConfigScope();
+      String projectIdentifier = entityScopeInfo.getProjectId() != null ? entityScopeInfo.getProjectId().getValue() : null;
+      String orgIdentifier = entityScopeInfo.getOrgId() != null ? entityScopeInfo.getOrgId().getValue() : null;
+      Map<String, String> logContext = FullSyncLogContextHelper.getContext(entityScopeInfo.getAccountId(),
+          orgIdentifier, projectIdentifier, messageId);
       try (AutoLogContext ignore2 = new AutoLogContext(logContext, OVERRIDE_ERROR)) {
         fullSyncTriggerService.triggerFullSync(fullSyncEventRequest, messageId);
         log.info("Successfully completed the Full Sync event with the id {}", messageId);

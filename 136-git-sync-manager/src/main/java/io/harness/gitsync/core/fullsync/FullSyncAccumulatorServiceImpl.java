@@ -139,8 +139,8 @@ public class FullSyncAccumulatorServiceImpl implements FullSyncAccumulatorServic
 
   private void saveFullSyncEntityInfo(EntityScopeInfo entityScopeInfo, String messageId, Microservice microservice,
       FileChange entityForFullSync, String branchName, String rootFolder, YamlGitConfigDTO yamlGitConfigDTO) {
-    String projectIdentifier = entityScopeInfo.getProjectId().getValue();
-    String orgIdentifier = entityScopeInfo.getOrgId().getValue();
+    String projectIdentifier = entityScopeInfo.getProjectId() != null ? entityScopeInfo.getProjectId().getValue() : null;
+    String orgIdentifier = entityScopeInfo.getOrgId() != null ? entityScopeInfo.getOrgId().getValue() : null;
     final GitFullSyncEntityInfo gitFullSyncEntityInfo =
         GitFullSyncEntityInfo.builder()
             .accountIdentifier(entityScopeInfo.getAccountId())
@@ -170,8 +170,10 @@ public class FullSyncAccumulatorServiceImpl implements FullSyncAccumulatorServic
   }
 
   private ScopeDetails getScopeDetails(EntityScopeInfo entityScopeInfo, String messageId) {
+    String projectIdentifier = entityScopeInfo.getProjectId() != null ? entityScopeInfo.getProjectId().getValue() : null;
+    String orgIdentifier = entityScopeInfo.getOrgId() != null ? entityScopeInfo.getOrgId().getValue() : null;
     Map<String, String> logContext = FullSyncLogContextHelper.getContext(entityScopeInfo.getAccountId(),
-        entityScopeInfo.getOrgId().getValue(), entityScopeInfo.getProjectId().getValue(), messageId);
+        orgIdentifier, projectIdentifier, messageId);
     return ScopeDetails.newBuilder().setEntityScope(entityScopeInfo).putAllLogContext(logContext).build();
   }
 
