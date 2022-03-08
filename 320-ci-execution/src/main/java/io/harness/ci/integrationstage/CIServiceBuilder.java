@@ -50,7 +50,8 @@ public class CIServiceBuilder {
       StageElementConfig stageElementConfig, PortFinder portFinder, CIExecutionServiceConfig ciExecutionServiceConfig) {
     List<ContainerDefinitionInfo> containerDefinitionInfos = new ArrayList<>();
     IntegrationStageConfig integrationStage = IntegrationStageUtils.getIntegrationStageConfig(stageElementConfig);
-    if (isEmpty(integrationStage.getServiceDependencies().getValue())) {
+    if (integrationStage.getServiceDependencies() == null
+        || isEmpty(integrationStage.getServiceDependencies().getValue())) {
       return containerDefinitionInfos;
     }
 
