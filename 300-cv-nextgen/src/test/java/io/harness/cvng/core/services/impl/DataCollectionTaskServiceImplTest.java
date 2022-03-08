@@ -470,7 +470,7 @@ public class DataCollectionTaskServiceImplTest extends CvNextGenTestBase {
   @Test
   @Owner(developers = KAPIL)
   @Category(UnitTests.class)
-  public void testUpdateTaskStatus_withCVNGLogService() {
+  public void testUpdateTaskStatus_withExecutionLogService() {
     DataCollectionTask dataCollectionTask = createAndSave(RUNNING);
     DataCollectionTaskResult result = DataCollectionTaskDTO.DataCollectionTaskResult.builder()
                                           .status(DataCollectionExecutionStatus.SUCCESS)
