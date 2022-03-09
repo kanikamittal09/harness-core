@@ -12,9 +12,9 @@ option go_package = "930_delegate_tasks";
 
 import "google/protobuf/timestamp.proto";
 
-import "930-delegate-tasks/src/main/proto/io/harness/perpetualtask/perpetual_task_execution.proto";
-import "955-delegate-beans/src/main/proto/io/harness/delegate/delegate.proto";
-import "955-delegate-beans/src/main/proto/io/harness/perpetualtask/perpetual_task.proto";
+import "io/harness/perpetualtask/perpetual_task_execution.proto";
+import "io/harness/delegate/delegate.proto";
+import "io/harness/perpetualtask/perpetual_task.proto";
 
 service PerpetualTaskService {
   rpc PerpetualTaskList(PerpetualTaskListRequest) returns (PerpetualTaskListResponse);

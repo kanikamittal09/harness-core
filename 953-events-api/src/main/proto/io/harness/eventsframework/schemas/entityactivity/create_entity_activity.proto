@@ -6,7 +6,7 @@
 syntax = "proto3";
 package io.harness.eventsframework.schemas.entityactivity;
 
-import "970-ng-commons/src/main/proto/io/harness/eventsframework/schemas/entity/entity_detail.proto";
+import "io/harness/eventsframework/schemas/entity/entity_detail.proto";
 
 option java_multiple_files = true;
 option go_package = "953_events_api";

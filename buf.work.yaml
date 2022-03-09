@@ -14,6 +14,7 @@ directories:
   - 960-notification-beans/src/main/proto
   - 970-grpc/src/main/proto
   - 970-api-services-beans/src/main/proto
+  - 970-ng-commons/src/main/proto
   - 980-commons/src/main/proto
   - product/ci/scm/proto
   - product/ci/addon/proto

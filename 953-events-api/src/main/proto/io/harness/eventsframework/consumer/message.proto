@@ -6,7 +6,7 @@
 syntax = "proto3";
 import "google/protobuf/timestamp.proto";
 
-import "953-events-api/src/main/proto/io/harness/eventsframework/producer/message.proto";
+import "io/harness/eventsframework/producer/message.proto";
 package io.harness.eventsframework.consumer;
 
 option java_multiple_files = true;

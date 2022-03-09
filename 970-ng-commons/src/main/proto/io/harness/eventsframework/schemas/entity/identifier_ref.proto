@@ -8,7 +8,7 @@ package io.harness.eventsframework.schemas.entity;
 
 option java_multiple_files = true;
 option go_package = "970_ng_commons";
-import "970-ng-commons/src/main/proto/io/harness/eventsframework/schemas/entity/scope.proto";
+import "io/harness/eventsframework/schemas/entity/scope.proto";
 import "google/protobuf/wrappers.proto";
 
 message IdentifierRefProtoDTO {

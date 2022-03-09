@@ -9,7 +9,7 @@ package io.harness.pms.contracts.service;
 
 option java_multiple_files = true;
 
-import "970-ng-commons/src/main/proto/io/harness/eventsframework/schemas/entity/entity_detail.proto";
+import "io/harness/eventsframework/schemas/entity/entity_detail.proto";
 
 service EntityReferenceService {
   rpc getReferences(EntityReferenceRequest) returns (EntityReferenceResponse);

@@ -10,8 +10,8 @@ package io.harness.product.ci.addon.proto;
 option java_multiple_files = true;
 option go_package = "ciaddonpb";
 
-import "product/ci/engine/proto/execution.proto";
-import "product/ci/engine/proto/artifact.proto";
+import "execution.proto";
+import "artifact.proto";
 
 message ExecuteStepRequest {
   io.harness.product.ci.engine.proto.UnitStep step = 1;
