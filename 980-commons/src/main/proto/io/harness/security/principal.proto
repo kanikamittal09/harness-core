@@ -8,9 +8,9 @@ syntax = "proto3";
 package io.harness.security;
 
 option java_multiple_files = true;
-import "980-commons/src/main/proto/io/harness/security/user_principal.proto";
-import "980-commons/src/main/proto/io/harness/security/service_principal.proto";
-import "980-commons/src/main/proto/io/harness/security/service_account_principal.proto";
+import "io/harness/security/user_principal.proto";
+import "io/harness/security/service_principal.proto";
+import "io/harness/security/service_account_principal.proto";
 
 message Principal {
   oneof principal {
