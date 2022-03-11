@@ -33,5 +33,4 @@ message FileArtifactMetadata {
 
 message FileArtifact {
   string name = 1;
-  string url = 2;
 }
