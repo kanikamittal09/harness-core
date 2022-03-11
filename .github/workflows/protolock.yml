@@ -1,0 +1,51 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Approach4_protolock
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the develop branch
+  pull_request:
+    branches: [ Approach4 ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+    inputs:
+      COMMIT:
+        description: "Whether the protolock changes should be committed back to the repository. Requires git. Values: true | false"
+        required: false
+        default: "false"
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      # Runs a set of commands using the runners shell
+      - name: Run a multi-line script
+        run: |
+          if ! [ -f /protolock.tgz ]; then
+            curl -L -o /protolock.tgz https://github.com/nilslice/protolock/releases/download/v0.16.0/protolock.20220302T184110Z.linux-amd64.tgz
+          fi
+          tar xzf /protolock.tgz
+          ./protolock status
+          if [ "$COMMIT" = "true" ]; then
+            ./protolock commit
+            git add proto.lock
+            if [[ $(git diff --staged --quiet proto.lock)$? == 1 ]]; then 
+              git config user.email ""
+              git config user.name ""
+              git commit -m "Update protolock status"
+              git push 
+            fi
+          fi
+        shell: bash
+        env: 
+          COMMIT: ${{ inputs.COMMIT }}
