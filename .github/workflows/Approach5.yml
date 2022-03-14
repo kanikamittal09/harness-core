@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: Approach4_protolock
+name: Approach5_protolock
 
 # Controls when the workflow will run
 on:
@@ -38,8 +38,8 @@ jobs:
           for i in $(find . -name proto.lock)
           do (
             cd $(dirname $i);
-            echo $i
-            protolock status;
+            pwd
+            ./../protolock status;
           )
           done
           if [ "$COMMIT" = "true" ]; then
