@@ -174,7 +174,7 @@ message WinrmHostValidationParameters {
 message LiteEngineConnectionParameters {
   string ip = 1;
   int32 port = 2;
-  bool is_local = 3;
+  
 }
 
 // Testing whether a delegate can connect to a given VM pool (CI)
