@@ -1,7 +1,4 @@
-verison: v1
-build:
-  roots:
-    - 950-delegate-tasks-beans/src/main/proto
+verison: v1beta1
 lint:
   use:
     - DEFAULT
