@@ -1,0 +1,62 @@
+{
+  "definitions": [
+    {
+      "protopath": "src:/:main:/:proto:/:io:/:harness:/:testing:/:stress_test.proto",
+      "def": {
+        "messages": [
+          {
+            "name": "DelegateTaskStressTest",
+            "fields": [
+              {
+                "id": 1,
+                "name": "stage",
+                "type": "DelegateTaskStressTestStage",
+                "is_repeated": true
+              }
+            ]
+          },
+          {
+            "name": "DelegateTaskStressTestStage",
+            "fields": [
+              {
+                "id": 1,
+                "name": "task_request",
+                "type": "delegate.SubmitTaskRequest",
+                "is_repeated": true
+              },
+              {
+                "id": 2,
+                "name": "offset",
+                "type": "int32"
+              },
+              {
+                "id": 3,
+                "name": "iterations",
+                "type": "int32"
+              },
+              {
+                "id": 4,
+                "name": "qps",
+                "type": "int32"
+              }
+            ]
+          }
+        ],
+        "imports": [
+          {
+            "path": "920-delegate-service-beans/src/main/proto/io/harness/delegate/delegate_service.proto"
+          }
+        ],
+        "package": {
+          "name": "io.harness.testing"
+        },
+        "options": [
+          {
+            "name": "java_multiple_files",
+            "value": "true"
+          }
+        ]
+      }
+    }
+  ]
+}
