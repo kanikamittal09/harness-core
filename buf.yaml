@@ -1,4 +1,4 @@
-verison: v1beta1
+version: v1beta1
 lint:
   use:
     - DEFAULT
