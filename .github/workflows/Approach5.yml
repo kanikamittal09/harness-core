@@ -39,7 +39,7 @@ jobs:
           do (
             cd $(dirname $i);
             pwd
-            ./../protolock status;
+            ./../protolock status || true;
           )
           done
           if [ "$COMMIT" = "true" ]; then
