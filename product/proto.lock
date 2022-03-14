@@ -1,0 +1,3753 @@
+{
+  "definitions": [
+    {
+      "protopath": "ci:/:addon:/:proto:/:addon.proto",
+      "def": {
+        "messages": [
+          {
+            "name": "ExecuteStepRequest",
+            "fields": [
+              {
+                "id": 1,
+                "name": "step",
+                "type": "io.harness.product.ci.engine.proto.UnitStep"
+              },
+              {
+                "id": 2,
+                "name": "tmpFilePath",
+                "type": "string"
+              }
+            ],
+            "maps": [
+              {
+                "key_type": "string",
+                "field": {
+                  "id": 3,
+                  "name": "prev_step_outputs",
+                  "type": "io.harness.product.ci.engine.proto.StepOutput"
+                }
+              }
+            ]
+          },
+          {
+            "name": "ExecuteStepResponse",
+            "fields": [
+              {
+                "id": 2,
+                "name": "num_retries",
+                "type": "int32"
+              },
+              {
+                "id": 3,
+                "name": "artifact",
+                "type": "io.harness.product.ci.engine.proto.Artifact"
+              }
+            ],
+            "maps": [
+              {
+                "key_type": "string",
+                "field": {
+                  "id": 1,
+                  "name": "output",
+                  "type": "string"
+                }
+              }
+            ]
+          },
+          {
+            "name": "SignalStopRequest"
+          },
+          {
+            "name": "SignalStopResponse"
+          }
+        ],
+        "services": [
+          {
+            "name": "Addon",
+            "rpcs": [
+              {
+                "name": "ExecuteStep",
+                "in_type": "ExecuteStepRequest",
+                "out_type": "ExecuteStepResponse"
+              },
+              {
+                "name": "SignalStop",
+                "in_type": "SignalStopRequest",
+                "out_type": "SignalStopResponse"
+              }
+            ]
+          }
+        ],
+        "imports": [
+          {
+            "path": "product/ci/engine/proto/execution.proto"
+          },
+          {
+            "path": "product/ci/engine/proto/artifact.proto"
+          }
+        ],
+        "package": {
+          "name": "io.harness.product.ci.addon.proto"
+        },
+        "options": [
+          {
+            "name": "java_multiple_files",
+            "value": "true"
+          },
+          {
+            "name": "go_package",
+            "value": "ciaddonpb"
+          }
+        ]
+      }
+    },
+    {
+      "protopath": "ci:/:engine:/:proto:/:artifact.proto",
+      "def": {
+        "messages": [
+          {
+            "name": "Artifact",
+            "fields": [
+              {
+                "id": 1,
+                "name": "docker_artifact",
+                "type": "DockerArtifactMetadata"
+              },
+              {
+                "id": 2,
+                "name": "file_artifact",
+                "type": "FileArtifactMetadata"
+              }
+            ]
+          },
+          {
+            "name": "DockerArtifactMetadata",
+            "fields": [
+              {
+                "id": 1,
+                "name": "registry_type",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "registry_url",
+                "type": "string"
+              },
+              {
+                "id": 3,
+                "name": "docker_images",
+                "type": "DockerImageMetadata",
+                "is_repeated": true
+              }
+            ]
+          },
+          {
+            "name": "DockerImageMetadata",
+            "fields": [
+              {
+                "id": 1,
+                "name": "image",
+                "type": "string"
+              },
+              {
+                "id": 3,
+                "name": "digest",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "FileArtifactMetadata",
+            "fields": [
+              {
+                "id": 1,
+                "name": "file_artifacts",
+                "type": "FileArtifact",
+                "is_repeated": true
+              }
+            ]
+          },
+          {
+            "name": "FileArtifact",
+            "fields": [
+              {
+                "id": 1,
+                "name": "name",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "url",
+                "type": "string"
+              }
+            ]
+          }
+        ],
+        "package": {
+          "name": "io.harness.product.ci.engine.proto"
+        },
+        "options": [
+          {
+            "name": "java_multiple_files",
+            "value": "true"
+          },
+          {
+            "name": "go_package",
+            "value": "cienginepb"
+          }
+        ]
+      }
+    },
+    {
+      "protopath": "ci:/:engine:/:proto:/:execution.proto",
+      "def": {
+        "enums": [
+          {
+            "name": "ShellType",
+            "enum_fields": [
+              {
+                "name": "SH"
+              },
+              {
+                "name": "BASH",
+                "integer": 1
+              }
+            ]
+          },
+          {
+            "name": "Report.Type",
+            "enum_fields": [
+              {
+                "name": "UNKNOWN"
+              },
+              {
+                "name": "JUNIT",
+                "integer": 1
+              }
+            ]
+          },
+          {
+            "name": "UpdateStateRequest.Action",
+            "enum_fields": [
+              {
+                "name": "UNKNOWN"
+              },
+              {
+                "name": "PAUSE",
+                "integer": 1
+              },
+              {
+                "name": "RESUME",
+                "integer": 2
+              }
+            ]
+          }
+        ],
+        "messages": [
+          {
+            "name": "StepContext",
+            "fields": [
+              {
+                "id": 1,
+                "name": "num_retries",
+                "type": "int32"
+              },
+              {
+                "id": 2,
+                "name": "execution_timeout_secs",
+                "type": "int64"
+              }
+            ]
+          },
+          {
+            "name": "PublishArtifactsStep",
+            "fields": [
+              {
+                "id": 1,
+                "name": "files",
+                "type": "UploadFile",
+                "is_repeated": true
+              },
+              {
+                "id": 2,
+                "name": "images",
+                "type": "BuildPublishImage",
+                "is_repeated": true
+              }
+            ]
+          },
+          {
+            "name": "Report",
+            "fields": [
+              {
+                "id": 2,
+                "name": "type",
+                "type": "Type"
+              },
+              {
+                "id": 3,
+                "name": "paths",
+                "type": "string",
+                "is_repeated": true
+              }
+            ]
+          },
+          {
+            "name": "RunTestsStep",
+            "fields": [
+              {
+                "id": 1,
+                "name": "args",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "language",
+                "type": "string"
+              },
+              {
+                "id": 3,
+                "name": "buildTool",
+                "type": "string"
+              },
+              {
+                "id": 4,
+                "name": "testAnnotations",
+                "type": "string"
+              },
+              {
+                "id": 5,
+                "name": "packages",
+                "type": "string"
+              },
+              {
+                "id": 6,
+                "name": "runOnlySelectedTests",
+                "type": "bool"
+              },
+              {
+                "id": 7,
+                "name": "context",
+                "type": "StepContext"
+              },
+              {
+                "id": 8,
+                "name": "container_port",
+                "type": "uint32"
+              },
+              {
+                "id": 9,
+                "name": "reports",
+                "type": "Report",
+                "is_repeated": true
+              },
+              {
+                "id": 10,
+                "name": "preTestCommand",
+                "type": "string"
+              },
+              {
+                "id": 11,
+                "name": "postTestCommand",
+                "type": "string"
+              },
+              {
+                "id": 12,
+                "name": "envVarOutputs",
+                "type": "string",
+                "is_repeated": true
+              },
+              {
+                "id": 13,
+                "name": "diff_files",
+                "type": "string"
+              }
+            ],
+            "maps": [
+              {
+                "key_type": "string",
+                "field": {
+                  "id": 14,
+                  "name": "environment",
+                  "type": "string"
+                }
+              }
+            ]
+          },
+          {
+            "name": "RunStep",
+            "fields": [
+              {
+                "id": 1,
+                "name": "command",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "context",
+                "type": "StepContext"
+              },
+              {
+                "id": 3,
+                "name": "env_var_outputs",
+                "type": "string",
+                "is_repeated": true
+              },
+              {
+                "id": 4,
+                "name": "container_port",
+                "type": "uint32"
+              },
+              {
+                "id": 5,
+                "name": "reports",
+                "type": "Report",
+                "is_repeated": true
+              },
+              {
+                "id": 7,
+                "name": "shell_type",
+                "type": "ShellType"
+              }
+            ],
+            "maps": [
+              {
+                "key_type": "string",
+                "field": {
+                  "id": 6,
+                  "name": "environment",
+                  "type": "string"
+                }
+              }
+            ]
+          },
+          {
+            "name": "PluginStep",
+            "fields": [
+              {
+                "id": 1,
+                "name": "image",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "context",
+                "type": "StepContext"
+              },
+              {
+                "id": 3,
+                "name": "container_port",
+                "type": "uint32"
+              },
+              {
+                "id": 4,
+                "name": "entrypoint",
+                "type": "string",
+                "is_repeated": true
+              },
+              {
+                "id": 6,
+                "name": "artifact_file_path",
+                "type": "string"
+              },
+              {
+                "id": 7,
+                "name": "reports",
+                "type": "Report",
+                "is_repeated": true
+              },
+              {
+                "id": 8,
+                "name": "env_var_outputs",
+                "type": "string",
+                "is_repeated": true
+              }
+            ],
+            "maps": [
+              {
+                "key_type": "string",
+                "field": {
+                  "id": 5,
+                  "name": "environment",
+                  "type": "string"
+                }
+              }
+            ]
+          },
+          {
+            "name": "SaveCacheStep",
+            "fields": [
+              {
+                "id": 1,
+                "name": "key",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "paths",
+                "type": "string",
+                "is_repeated": true
+              }
+            ]
+          },
+          {
+            "name": "RestoreCacheStep",
+            "fields": [
+              {
+                "id": 1,
+                "name": "key",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "fail_if_not_exist",
+                "type": "bool"
+              }
+            ]
+          },
+          {
+            "name": "UnitStep",
+            "fields": [
+              {
+                "id": 1,
+                "name": "id",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "display_name",
+                "type": "string"
+              },
+              {
+                "id": 3,
+                "name": "run",
+                "type": "RunStep"
+              },
+              {
+                "id": 4,
+                "name": "save_cache",
+                "type": "SaveCacheStep"
+              },
+              {
+                "id": 5,
+                "name": "restore_cache",
+                "type": "RestoreCacheStep"
+              },
+              {
+                "id": 6,
+                "name": "publish_artifacts",
+                "type": "PublishArtifactsStep"
+              },
+              {
+                "id": 9,
+                "name": "plugin",
+                "type": "PluginStep"
+              },
+              {
+                "id": 10,
+                "name": "runTests",
+                "type": "RunTestsStep"
+              },
+              {
+                "id": 7,
+                "name": "callback_token",
+                "type": "string"
+              },
+              {
+                "id": 8,
+                "name": "task_id",
+                "type": "string"
+              },
+              {
+                "id": 11,
+                "name": "skip_condition",
+                "type": "string"
+              },
+              {
+                "id": 12,
+                "name": "log_key",
+                "type": "string"
+              },
+              {
+                "id": 13,
+                "name": "account_id",
+                "type": "string"
+              },
+              {
+                "id": 14,
+                "name": "container_port",
+                "type": "uint32"
+              }
+            ]
+          },
+          {
+            "name": "ParallelStep",
+            "fields": [
+              {
+                "id": 1,
+                "name": "id",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "display_name",
+                "type": "string"
+              },
+              {
+                "id": 3,
+                "name": "steps",
+                "type": "UnitStep",
+                "is_repeated": true
+              }
+            ]
+          },
+          {
+            "name": "Step",
+            "fields": [
+              {
+                "id": 1,
+                "name": "parallel",
+                "type": "ParallelStep"
+              },
+              {
+                "id": 2,
+                "name": "unit",
+                "type": "UnitStep"
+              }
+            ]
+          },
+          {
+            "name": "Execution",
+            "fields": [
+              {
+                "id": 1,
+                "name": "steps",
+                "type": "Step",
+                "is_repeated": true
+              },
+              {
+                "id": 2,
+                "name": "account_id",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "UpdateStateRequest",
+            "fields": [
+              {
+                "id": 1,
+                "name": "action",
+                "type": "Action"
+              }
+            ]
+          },
+          {
+            "name": "UpdateStateResponse"
+          },
+          {
+            "name": "GetImageEntrypointRequest",
+            "fields": [
+              {
+                "id": 1,
+                "name": "id",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "image",
+                "type": "string"
+              },
+              {
+                "id": 3,
+                "name": "secret",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "GetImageEntrypointResponse",
+            "fields": [
+              {
+                "id": 1,
+                "name": "entrypoint",
+                "type": "string",
+                "is_repeated": true
+              },
+              {
+                "id": 2,
+                "name": "args",
+                "type": "string",
+                "is_repeated": true
+              }
+            ]
+          },
+          {
+            "name": "StepOutput",
+            "maps": [
+              {
+                "key_type": "string",
+                "field": {
+                  "id": 2,
+                  "name": "output",
+                  "type": "string"
+                }
+              }
+            ]
+          },
+          {
+            "name": "EvaluateJEXLRequest",
+            "fields": [
+              {
+                "id": 1,
+                "name": "step_id",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "expressions",
+                "type": "string",
+                "is_repeated": true
+              }
+            ],
+            "maps": [
+              {
+                "key_type": "string",
+                "field": {
+                  "id": 3,
+                  "name": "step_outputs",
+                  "type": "StepOutput"
+                }
+              }
+            ]
+          },
+          {
+            "name": "EvaluateJEXLResponse",
+            "maps": [
+              {
+                "key_type": "string",
+                "field": {
+                  "id": 1,
+                  "name": "evaluated_expressions",
+                  "type": "string"
+                }
+              }
+            ]
+          },
+          {
+            "name": "PingRequest"
+          },
+          {
+            "name": "PingResponse"
+          },
+          {
+            "name": "ExecuteStepRequest",
+            "fields": [
+              {
+                "id": 1,
+                "name": "execution_id",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "step",
+                "type": "UnitStep"
+              },
+              {
+                "id": 3,
+                "name": "tmp_file_path",
+                "type": "string"
+              },
+              {
+                "id": 4,
+                "name": "delegate_svc_endpoint",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "ExecuteStepResponse"
+          }
+        ],
+        "services": [
+          {
+            "name": "LiteEngine",
+            "rpcs": [
+              {
+                "name": "UpdateState",
+                "in_type": "UpdateStateRequest",
+                "out_type": "UpdateStateResponse"
+              },
+              {
+                "name": "GetImageEntrypoint",
+                "in_type": "GetImageEntrypointRequest",
+                "out_type": "GetImageEntrypointResponse"
+              },
+              {
+                "name": "EvaluateJEXL",
+                "in_type": "EvaluateJEXLRequest",
+                "out_type": "EvaluateJEXLResponse"
+              },
+              {
+                "name": "Ping",
+                "in_type": "PingRequest",
+                "out_type": "PingResponse"
+              },
+              {
+                "name": "ExecuteStep",
+                "in_type": "ExecuteStepRequest",
+                "out_type": "ExecuteStepResponse"
+              }
+            ]
+          }
+        ],
+        "imports": [
+          {
+            "path": "product/ci/engine/proto/publish_artifact.proto"
+          }
+        ],
+        "package": {
+          "name": "io.harness.product.ci.engine.proto"
+        },
+        "options": [
+          {
+            "name": "java_multiple_files",
+            "value": "true"
+          },
+          {
+            "name": "go_package",
+            "value": "cienginepb"
+          }
+        ]
+      }
+    },
+    {
+      "protopath": "ci:/:engine:/:proto:/:logproxy.proto",
+      "def": {
+        "messages": [
+          {
+            "name": "WriteRequest",
+            "fields": [
+              {
+                "id": 1,
+                "name": "key",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "lines",
+                "type": "string",
+                "is_repeated": true
+              }
+            ]
+          },
+          {
+            "name": "WriteResponse"
+          },
+          {
+            "name": "OpenRequest",
+            "fields": [
+              {
+                "id": 1,
+                "name": "key",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "OpenResponse"
+          },
+          {
+            "name": "UploadRequest",
+            "fields": [
+              {
+                "id": 1,
+                "name": "key",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "lines",
+                "type": "string",
+                "is_repeated": true
+              }
+            ]
+          },
+          {
+            "name": "UploadResponse"
+          },
+          {
+            "name": "CloseRequest",
+            "fields": [
+              {
+                "id": 1,
+                "name": "key",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "CloseResponse"
+          },
+          {
+            "name": "UploadLinkRequest",
+            "fields": [
+              {
+                "id": 1,
+                "name": "key",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "UploadLinkResponse",
+            "fields": [
+              {
+                "id": 1,
+                "name": "link",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "UploadUsingLinkRequest",
+            "fields": [
+              {
+                "id": 1,
+                "name": "link",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "lines",
+                "type": "string",
+                "is_repeated": true
+              }
+            ]
+          },
+          {
+            "name": "UploadUsingLinkResponse"
+          }
+        ],
+        "services": [
+          {
+            "name": "LogProxy",
+            "rpcs": [
+              {
+                "name": "Write",
+                "in_type": "WriteRequest",
+                "out_type": "WriteResponse"
+              },
+              {
+                "name": "Open",
+                "in_type": "OpenRequest",
+                "out_type": "OpenResponse"
+              },
+              {
+                "name": "UploadLink",
+                "in_type": "UploadLinkRequest",
+                "out_type": "UploadLinkResponse"
+              },
+              {
+                "name": "UploadUsingLink",
+                "in_type": "UploadUsingLinkRequest",
+                "out_type": "UploadUsingLinkResponse",
+                "in_streamed": true
+              },
+              {
+                "name": "Close",
+                "in_type": "CloseRequest",
+                "out_type": "CloseResponse"
+              },
+              {
+                "name": "Upload",
+                "in_type": "UploadRequest",
+                "out_type": "UploadResponse",
+                "in_streamed": true
+              }
+            ]
+          }
+        ],
+        "package": {
+          "name": "io.harness.product.ci.engine.proto"
+        },
+        "options": [
+          {
+            "name": "java_multiple_files",
+            "value": "true"
+          },
+          {
+            "name": "go_package",
+            "value": "cienginepb"
+          }
+        ]
+      }
+    },
+    {
+      "protopath": "ci:/:engine:/:proto:/:publish_artifact.proto",
+      "def": {
+        "enums": [
+          {
+            "name": "LocationType",
+            "enum_fields": [
+              {
+                "name": "UNKNOWN"
+              },
+              {
+                "name": "S3",
+                "integer": 1
+              },
+              {
+                "name": "GCS",
+                "integer": 2
+              },
+              {
+                "name": "JFROG",
+                "integer": 3
+              },
+              {
+                "name": "GCR",
+                "integer": 4
+              },
+              {
+                "name": "ECR",
+                "integer": 5
+              },
+              {
+                "name": "DOCKERHUB",
+                "integer": 6
+              }
+            ]
+          },
+          {
+            "name": "AuthType",
+            "enum_fields": [
+              {
+                "name": "BASIC_AUTH"
+              },
+              {
+                "name": "SECRET_FILE",
+                "integer": 1
+              },
+              {
+                "name": "ACCESS_KEY",
+                "integer": 2
+              }
+            ]
+          }
+        ],
+        "messages": [
+          {
+            "name": "TaskId",
+            "fields": [
+              {
+                "id": 1,
+                "name": "id",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "Connector",
+            "fields": [
+              {
+                "id": 1,
+                "name": "id",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "auth",
+                "type": "AuthType"
+              }
+            ]
+          },
+          {
+            "name": "BuildPublishImage",
+            "fields": [
+              {
+                "id": 1,
+                "name": "docker_file",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "context",
+                "type": "string"
+              },
+              {
+                "id": 3,
+                "name": "destination",
+                "type": "Destination"
+              }
+            ]
+          },
+          {
+            "name": "UploadFile",
+            "fields": [
+              {
+                "id": 1,
+                "name": "file_pattern",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "destination",
+                "type": "Destination"
+              }
+            ]
+          },
+          {
+            "name": "Destination",
+            "fields": [
+              {
+                "id": 1,
+                "name": "destination_url",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "connector",
+                "type": "Connector"
+              },
+              {
+                "id": 3,
+                "name": "location_type",
+                "type": "LocationType"
+              },
+              {
+                "id": 4,
+                "name": "region",
+                "type": "string"
+              }
+            ]
+          }
+        ],
+        "package": {
+          "name": "io.harness.product.ci.engine.proto"
+        },
+        "options": [
+          {
+            "name": "java_multiple_files",
+            "value": "true"
+          },
+          {
+            "name": "go_package",
+            "value": "cienginepb"
+          }
+        ]
+      }
+    },
+    {
+      "protopath": "ci:/:engine:/:proto:/:tiproxy.proto",
+      "def": {
+        "messages": [
+          {
+            "name": "UploadCgRequest",
+            "fields": [
+              {
+                "id": 1,
+                "name": "step_id",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "repo",
+                "type": "string"
+              },
+              {
+                "id": 3,
+                "name": "sha",
+                "type": "string"
+              },
+              {
+                "id": 4,
+                "name": "source",
+                "type": "string"
+              },
+              {
+                "id": 5,
+                "name": "data_dir",
+                "type": "string"
+              },
+              {
+                "id": 6,
+                "name": "target",
+                "type": "string"
+              },
+              {
+                "id": 7,
+                "name": "time_ms",
+                "type": "int64"
+              }
+            ]
+          },
+          {
+            "name": "UploadCgResponse"
+          },
+          {
+            "name": "WriteTestsRequest",
+            "fields": [
+              {
+                "id": 1,
+                "name": "step_id",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "tests",
+                "type": "string",
+                "is_repeated": true
+              },
+              {
+                "id": 3,
+                "name": "repo",
+                "type": "string"
+              },
+              {
+                "id": 4,
+                "name": "sha",
+                "type": "string"
+              },
+              {
+                "id": 5,
+                "name": "commit_link",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "WriteTestsResponse"
+          },
+          {
+            "name": "SelectTestsRequest",
+            "fields": [
+              {
+                "id": 1,
+                "name": "step_id",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "repo",
+                "type": "string"
+              },
+              {
+                "id": 3,
+                "name": "sha",
+                "type": "string"
+              },
+              {
+                "id": 4,
+                "name": "source_branch",
+                "type": "string"
+              },
+              {
+                "id": 5,
+                "name": "target_branch",
+                "type": "string"
+              },
+              {
+                "id": 6,
+                "name": "body",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "SelectTestsResponse",
+            "fields": [
+              {
+                "id": 1,
+                "name": "selected",
+                "type": "string"
+              }
+            ]
+          }
+        ],
+        "services": [
+          {
+            "name": "TiProxy",
+            "rpcs": [
+              {
+                "name": "WriteTests",
+                "in_type": "WriteTestsRequest",
+                "out_type": "WriteTestsResponse",
+                "in_streamed": true
+              },
+              {
+                "name": "SelectTests",
+                "in_type": "SelectTestsRequest",
+                "out_type": "SelectTestsResponse"
+              },
+              {
+                "name": "UploadCg",
+                "in_type": "UploadCgRequest",
+                "out_type": "UploadCgResponse"
+              }
+            ]
+          }
+        ],
+        "package": {
+          "name": "io.harness.product.ci.engine.proto"
+        },
+        "options": [
+          {
+            "name": "java_multiple_files",
+            "value": "true"
+          },
+          {
+            "name": "go_package",
+            "value": "cienginepb"
+          }
+        ]
+      }
+    },
+    {
+      "protopath": "ci:/:scm:/:proto:/:scm.proto",
+      "def": {
+        "enums": [
+          {
+            "name": "GitProvider",
+            "enum_fields": [
+              {
+                "name": "BITBUCKET"
+              },
+              {
+                "name": "GITEA",
+                "integer": 1
+              },
+              {
+                "name": "GITHUB",
+                "integer": 2
+              },
+              {
+                "name": "GITLAB",
+                "integer": 3
+              },
+              {
+                "name": "GOGS",
+                "integer": 4
+              },
+              {
+                "name": "STASH",
+                "integer": 5
+              },
+              {
+                "name": "CODECOMMIT",
+                "integer": 6
+              }
+            ]
+          },
+          {
+            "name": "Action",
+            "enum_fields": [
+              {
+                "name": "UNKNOWN"
+              },
+              {
+                "name": "CREATE",
+                "integer": 1
+              },
+              {
+                "name": "UPDATE",
+                "integer": 2
+              },
+              {
+                "name": "DELETE",
+                "integer": 3
+              },
+              {
+                "name": "OPEN",
+                "integer": 4
+              },
+              {
+                "name": "REOPEN",
+                "integer": 5
+              },
+              {
+                "name": "CLOSE",
+                "integer": 6
+              },
+              {
+                "name": "LABEL",
+                "integer": 7
+              },
+              {
+                "name": "UNLABEL",
+                "integer": 8
+              },
+              {
+                "name": "SYNC",
+                "integer": 9
+              },
+              {
+                "name": "MERGE",
+                "integer": 10
+              }
+            ]
+          },
+          {
+            "name": "ContentType",
+            "enum_fields": [
+              {
+                "name": "UNKNOWN_CONTENT"
+              },
+              {
+                "name": "FILE",
+                "integer": 1
+              },
+              {
+                "name": "DIRECTORY",
+                "integer": 2
+              },
+              {
+                "name": "SYMLINK",
+                "integer": 3
+              },
+              {
+                "name": "GITLINK",
+                "integer": 4
+              }
+            ]
+          },
+          {
+            "name": "GithubWebhookEvent",
+            "enum_fields": [
+              {
+                "name": "GITHUB_CREATE"
+              },
+              {
+                "name": "GITHUB_DELETE",
+                "integer": 1
+              },
+              {
+                "name": "GITHUB_DEPLOYMENT",
+                "integer": 2
+              },
+              {
+                "name": "GITHUB_ISSUE",
+                "integer": 3
+              },
+              {
+                "name": "GITHUB_ISSUE_COMMENT",
+                "integer": 4
+              },
+              {
+                "name": "GITHUB_PULL_REQUEST",
+                "integer": 5
+              },
+              {
+                "name": "GITHUB_PULL_REQUEST_REVIEW",
+                "integer": 6
+              },
+              {
+                "name": "GITHUB_PUSH",
+                "integer": 7
+              }
+            ]
+          },
+          {
+            "name": "GitlabWebhookEvent",
+            "enum_fields": [
+              {
+                "name": "GITLAB_COMMENT"
+              },
+              {
+                "name": "GITLAB_ISSUES",
+                "integer": 1
+              },
+              {
+                "name": "GITLAB_MERGE",
+                "integer": 2
+              },
+              {
+                "name": "GITLAB_PUSH",
+                "integer": 3
+              },
+              {
+                "name": "GITLAB_TAG",
+                "integer": 4
+              }
+            ]
+          },
+          {
+            "name": "BitbucketCloudWebhookEvent",
+            "enum_fields": [
+              {
+                "name": "BITBUCKET_CLOUD_ISSUE"
+              },
+              {
+                "name": "BITBUCKET_CLOUD_ISSUE_COMMENT",
+                "integer": 1
+              },
+              {
+                "name": "BITBUCKET_CLOUD_PULL_REQUEST",
+                "integer": 2
+              },
+              {
+                "name": "BITBUCKET_CLOUD_PULL_REQUEST_COMMENT",
+                "integer": 3
+              },
+              {
+                "name": "BITBUCKET_CLOUD_PUSH",
+                "integer": 4
+              }
+            ]
+          },
+          {
+            "name": "BitbucketServerWebhookEvent",
+            "enum_fields": [
+              {
+                "name": "BITBUCKET_SERVER_BRANCH_PUSH_TAG"
+              },
+              {
+                "name": "BITBUCKET_SERVER_PR",
+                "integer": 1
+              },
+              {
+                "name": "BITBUCKET_SERVER_PR_COMMENT",
+                "integer": 2
+              }
+            ]
+          }
+        ],
+        "messages": [
+          {
+            "name": "User",
+            "fields": [
+              {
+                "id": 1,
+                "name": "login",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "name",
+                "type": "string"
+              },
+              {
+                "id": 3,
+                "name": "email",
+                "type": "string"
+              },
+              {
+                "id": 4,
+                "name": "avatar",
+                "type": "string"
+              },
+              {
+                "id": 5,
+                "name": "created",
+                "type": "google.protobuf.Timestamp"
+              },
+              {
+                "id": 6,
+                "name": "updated",
+                "type": "google.protobuf.Timestamp"
+              }
+            ]
+          },
+          {
+            "name": "Reference",
+            "fields": [
+              {
+                "id": 1,
+                "name": "name",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "path",
+                "type": "string"
+              },
+              {
+                "id": 3,
+                "name": "sha",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "Perm",
+            "fields": [
+              {
+                "id": 1,
+                "name": "pull",
+                "type": "bool"
+              },
+              {
+                "id": 2,
+                "name": "push",
+                "type": "bool"
+              },
+              {
+                "id": 3,
+                "name": "admin",
+                "type": "bool"
+              }
+            ]
+          },
+          {
+            "name": "Repository",
+            "fields": [
+              {
+                "id": 1,
+                "name": "id",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "namespace",
+                "type": "string"
+              },
+              {
+                "id": 3,
+                "name": "name",
+                "type": "string"
+              },
+              {
+                "id": 4,
+                "name": "perm",
+                "type": "Perm"
+              },
+              {
+                "id": 5,
+                "name": "branch",
+                "type": "string"
+              },
+              {
+                "id": 6,
+                "name": "private",
+                "type": "bool"
+              },
+              {
+                "id": 7,
+                "name": "clone",
+                "type": "string"
+              },
+              {
+                "id": 8,
+                "name": "clone_ssh",
+                "type": "string"
+              },
+              {
+                "id": 9,
+                "name": "link",
+                "type": "string"
+              },
+              {
+                "id": 10,
+                "name": "created",
+                "type": "google.protobuf.Timestamp"
+              },
+              {
+                "id": 11,
+                "name": "updated",
+                "type": "google.protobuf.Timestamp"
+              }
+            ]
+          },
+          {
+            "name": "Signature",
+            "fields": [
+              {
+                "id": 1,
+                "name": "name",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "email",
+                "type": "string"
+              },
+              {
+                "id": 3,
+                "name": "date",
+                "type": "google.protobuf.Timestamp"
+              },
+              {
+                "id": 4,
+                "name": "login",
+                "type": "string"
+              },
+              {
+                "id": 5,
+                "name": "avatar",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "Commit",
+            "fields": [
+              {
+                "id": 1,
+                "name": "sha",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "message",
+                "type": "string"
+              },
+              {
+                "id": 3,
+                "name": "author",
+                "type": "Signature"
+              },
+              {
+                "id": 4,
+                "name": "committer",
+                "type": "Signature"
+              },
+              {
+                "id": 5,
+                "name": "link",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "Label",
+            "fields": [
+              {
+                "id": 1,
+                "name": "name",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "color",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "PullRequest",
+            "fields": [
+              {
+                "id": 1,
+                "name": "number",
+                "type": "int64"
+              },
+              {
+                "id": 2,
+                "name": "title",
+                "type": "string"
+              },
+              {
+                "id": 3,
+                "name": "body",
+                "type": "string"
+              },
+              {
+                "id": 4,
+                "name": "sha",
+                "type": "string"
+              },
+              {
+                "id": 5,
+                "name": "ref",
+                "type": "string"
+              },
+              {
+                "id": 6,
+                "name": "source",
+                "type": "string"
+              },
+              {
+                "id": 7,
+                "name": "target",
+                "type": "string"
+              },
+              {
+                "id": 8,
+                "name": "fork",
+                "type": "string"
+              },
+              {
+                "id": 9,
+                "name": "link",
+                "type": "string"
+              },
+              {
+                "id": 10,
+                "name": "closed",
+                "type": "bool"
+              },
+              {
+                "id": 11,
+                "name": "merged",
+                "type": "bool"
+              },
+              {
+                "id": 12,
+                "name": "base",
+                "type": "Reference"
+              },
+              {
+                "id": 13,
+                "name": "head",
+                "type": "Reference"
+              },
+              {
+                "id": 14,
+                "name": "author",
+                "type": "User"
+              },
+              {
+                "id": 15,
+                "name": "created",
+                "type": "google.protobuf.Timestamp"
+              },
+              {
+                "id": 16,
+                "name": "updated",
+                "type": "google.protobuf.Timestamp"
+              },
+              {
+                "id": 17,
+                "name": "labels",
+                "type": "Label",
+                "is_repeated": true
+              },
+              {
+                "id": 18,
+                "name": "commits",
+                "type": "Commit",
+                "is_repeated": true
+              }
+            ]
+          },
+          {
+            "name": "PullRequestHook",
+            "fields": [
+              {
+                "id": 1,
+                "name": "action",
+                "type": "Action"
+              },
+              {
+                "id": 2,
+                "name": "repo",
+                "type": "Repository"
+              },
+              {
+                "id": 3,
+                "name": "pr",
+                "type": "PullRequest"
+              },
+              {
+                "id": 4,
+                "name": "sender",
+                "type": "User"
+              }
+            ]
+          },
+          {
+            "name": "IssueCommentHook",
+            "fields": [
+              {
+                "id": 1,
+                "name": "action",
+                "type": "Action"
+              },
+              {
+                "id": 2,
+                "name": "repo",
+                "type": "Repository"
+              },
+              {
+                "id": 3,
+                "name": "issue",
+                "type": "Issue"
+              },
+              {
+                "id": 4,
+                "name": "sender",
+                "type": "User"
+              },
+              {
+                "id": 5,
+                "name": "comment",
+                "type": "Comment"
+              }
+            ]
+          },
+          {
+            "name": "BranchHook",
+            "fields": [
+              {
+                "id": 1,
+                "name": "action",
+                "type": "Action"
+              },
+              {
+                "id": 2,
+                "name": "repo",
+                "type": "Repository"
+              },
+              {
+                "id": 3,
+                "name": "sender",
+                "type": "User"
+              },
+              {
+                "id": 4,
+                "name": "ref",
+                "type": "Reference"
+              }
+            ]
+          },
+          {
+            "name": "Comment",
+            "fields": [
+              {
+                "id": 1,
+                "name": "id",
+                "type": "int32"
+              },
+              {
+                "id": 2,
+                "name": "body",
+                "type": "string"
+              },
+              {
+                "id": 3,
+                "name": "user",
+                "type": "User"
+              },
+              {
+                "id": 4,
+                "name": "created",
+                "type": "google.protobuf.Timestamp"
+              },
+              {
+                "id": 5,
+                "name": "updated",
+                "type": "google.protobuf.Timestamp"
+              }
+            ]
+          },
+          {
+            "name": "Issue",
+            "fields": [
+              {
+                "id": 1,
+                "name": "number",
+                "type": "int32"
+              },
+              {
+                "id": 2,
+                "name": "title",
+                "type": "string"
+              },
+              {
+                "id": 3,
+                "name": "body",
+                "type": "string"
+              },
+              {
+                "id": 4,
+                "name": "link",
+                "type": "string"
+              },
+              {
+                "id": 5,
+                "name": "labels",
+                "type": "string",
+                "is_repeated": true
+              },
+              {
+                "id": 6,
+                "name": "closed",
+                "type": "bool"
+              },
+              {
+                "id": 7,
+                "name": "locked",
+                "type": "bool"
+              },
+              {
+                "id": 8,
+                "name": "user",
+                "type": "User"
+              },
+              {
+                "id": 9,
+                "name": "pr",
+                "type": "PullRequest"
+              },
+              {
+                "id": 10,
+                "name": "created",
+                "type": "google.protobuf.Timestamp"
+              },
+              {
+                "id": 11,
+                "name": "updated",
+                "type": "google.protobuf.Timestamp"
+              }
+            ]
+          },
+          {
+            "name": "PushHook",
+            "fields": [
+              {
+                "id": 1,
+                "name": "ref",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "base_ref",
+                "type": "string"
+              },
+              {
+                "id": 3,
+                "name": "repo",
+                "type": "Repository"
+              },
+              {
+                "id": 4,
+                "name": "before",
+                "type": "string"
+              },
+              {
+                "id": 5,
+                "name": "after",
+                "type": "string"
+              },
+              {
+                "id": 6,
+                "name": "commit",
+                "type": "Commit"
+              },
+              {
+                "id": 7,
+                "name": "sender",
+                "type": "User"
+              },
+              {
+                "id": 8,
+                "name": "commits",
+                "type": "Commit",
+                "is_repeated": true
+              }
+            ]
+          },
+          {
+            "name": "Header",
+            "fields": [
+              {
+                "id": 1,
+                "name": "fields",
+                "type": "Pair",
+                "is_repeated": true
+              }
+            ],
+            "messages": [
+              {
+                "name": "Pair",
+                "fields": [
+                  {
+                    "id": 1,
+                    "name": "key",
+                    "type": "string"
+                  },
+                  {
+                    "id": 2,
+                    "name": "values",
+                    "type": "string",
+                    "is_repeated": true
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "ParseWebhookRequest",
+            "fields": [
+              {
+                "id": 1,
+                "name": "header",
+                "type": "Header"
+              },
+              {
+                "id": 2,
+                "name": "body",
+                "type": "string"
+              },
+              {
+                "id": 3,
+                "name": "secret",
+                "type": "string"
+              },
+              {
+                "id": 4,
+                "name": "provider",
+                "type": "GitProvider"
+              }
+            ]
+          },
+          {
+            "name": "ParseWebhookResponse",
+            "fields": [
+              {
+                "id": 1,
+                "name": "pr",
+                "type": "PullRequestHook"
+              },
+              {
+                "id": 2,
+                "name": "push",
+                "type": "PushHook"
+              },
+              {
+                "id": 3,
+                "name": "comment",
+                "type": "IssueCommentHook"
+              },
+              {
+                "id": 4,
+                "name": "branch",
+                "type": "BranchHook"
+              }
+            ]
+          },
+          {
+            "name": "GithubApp",
+            "fields": [
+              {
+                "id": 1,
+                "name": "app_id",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "private_key",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "GithubProvider",
+            "fields": [
+              {
+                "id": 1,
+                "name": "access_token",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "github_app",
+                "type": "GithubApp"
+              }
+            ]
+          },
+          {
+            "name": "GitlabProvider",
+            "fields": [
+              {
+                "id": 1,
+                "name": "access_token",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "personal_token",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "GiteaProvider",
+            "fields": [
+              {
+                "id": 1,
+                "name": "access_token",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "BitbucketCloudProvider",
+            "fields": [
+              {
+                "id": 1,
+                "name": "username",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "app_password",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "BitbucketServerProvider",
+            "fields": [
+              {
+                "id": 1,
+                "name": "username",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "personal_access_token",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "CodecommitProvider",
+            "fields": [
+              {
+                "id": 1,
+                "name": "access_key",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "secret_key",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "Provider",
+            "fields": [
+              {
+                "id": 1,
+                "name": "github",
+                "type": "GithubProvider"
+              },
+              {
+                "id": 2,
+                "name": "gitlab",
+                "type": "GitlabProvider"
+              },
+              {
+                "id": 3,
+                "name": "gitea",
+                "type": "GiteaProvider"
+              },
+              {
+                "id": 4,
+                "name": "bitbucket_cloud",
+                "type": "BitbucketCloudProvider"
+              },
+              {
+                "id": 5,
+                "name": "bitbucket_server",
+                "type": "BitbucketServerProvider"
+              },
+              {
+                "id": 6,
+                "name": "codecommit",
+                "type": "CodecommitProvider"
+              },
+              {
+                "id": 7,
+                "name": "endpoint",
+                "type": "string"
+              },
+              {
+                "id": 8,
+                "name": "skipVerify",
+                "type": "bool"
+              },
+              {
+                "id": 9,
+                "name": "debug",
+                "type": "bool"
+              },
+              {
+                "id": 10,
+                "name": "additional_certs_path",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "PageResponse",
+            "fields": [
+              {
+                "id": 1,
+                "name": "next",
+                "type": "int32"
+              },
+              {
+                "id": 2,
+                "name": "next_url",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "PageRequest",
+            "fields": [
+              {
+                "id": 1,
+                "name": "page",
+                "type": "int32"
+              },
+              {
+                "id": 2,
+                "name": "url",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "GetFileRequest",
+            "fields": [
+              {
+                "id": 1,
+                "name": "slug",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "path",
+                "type": "string"
+              },
+              {
+                "id": 3,
+                "name": "branch",
+                "type": "string"
+              },
+              {
+                "id": 4,
+                "name": "ref",
+                "type": "string"
+              },
+              {
+                "id": 5,
+                "name": "provider",
+                "type": "Provider"
+              }
+            ]
+          },
+          {
+            "name": "GetBatchFileRequest",
+            "fields": [
+              {
+                "id": 1,
+                "name": "findRequest",
+                "type": "GetFileRequest",
+                "is_repeated": true
+              }
+            ]
+          },
+          {
+            "name": "GetLatestFileRequest",
+            "fields": [
+              {
+                "id": 1,
+                "name": "slug",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "path",
+                "type": "string"
+              },
+              {
+                "id": 3,
+                "name": "branch",
+                "type": "string"
+              },
+              {
+                "id": 4,
+                "name": "provider",
+                "type": "Provider"
+              }
+            ]
+          },
+          {
+            "name": "DeleteFileRequest",
+            "fields": [
+              {
+                "id": 1,
+                "name": "slug",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "path",
+                "type": "string"
+              },
+              {
+                "id": 3,
+                "name": "branch",
+                "type": "string"
+              },
+              {
+                "id": 4,
+                "name": "message",
+                "type": "string"
+              },
+              {
+                "id": 5,
+                "name": "commit_id",
+                "type": "string"
+              },
+              {
+                "id": 6,
+                "name": "blob_id",
+                "type": "string"
+              },
+              {
+                "id": 7,
+                "name": "signature",
+                "type": "Signature"
+              },
+              {
+                "id": 8,
+                "name": "provider",
+                "type": "Provider"
+              }
+            ]
+          },
+          {
+            "name": "DeleteFileResponse",
+            "fields": [
+              {
+                "id": 1,
+                "name": "status",
+                "type": "int32"
+              },
+              {
+                "id": 2,
+                "name": "error",
+                "type": "string"
+              },
+              {
+                "id": 3,
+                "name": "commit_id",
+                "type": "string"
+              },
+              {
+                "id": 4,
+                "name": "blob_id",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "CreateFileResponse",
+            "fields": [
+              {
+                "id": 1,
+                "name": "status",
+                "type": "int32"
+              },
+              {
+                "id": 2,
+                "name": "error",
+                "type": "string"
+              },
+              {
+                "id": 3,
+                "name": "commit_id",
+                "type": "string"
+              },
+              {
+                "id": 4,
+                "name": "blob_id",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "UpdateFileResponse",
+            "fields": [
+              {
+                "id": 1,
+                "name": "status",
+                "type": "int32"
+              },
+              {
+                "id": 2,
+                "name": "error",
+                "type": "string"
+              },
+              {
+                "id": 3,
+                "name": "commit_id",
+                "type": "string"
+              },
+              {
+                "id": 4,
+                "name": "blob_id",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "FileModifyRequest",
+            "fields": [
+              {
+                "id": 1,
+                "name": "slug",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "path",
+                "type": "string"
+              },
+              {
+                "id": 3,
+                "name": "branch",
+                "type": "string"
+              },
+              {
+                "id": 4,
+                "name": "content",
+                "type": "string"
+              },
+              {
+                "id": 5,
+                "name": "message",
+                "type": "string"
+              },
+              {
+                "id": 6,
+                "name": "commit_id",
+                "type": "string"
+              },
+              {
+                "id": 7,
+                "name": "blob_id",
+                "type": "string"
+              },
+              {
+                "id": 8,
+                "name": "signature",
+                "type": "Signature"
+              },
+              {
+                "id": 9,
+                "name": "provider",
+                "type": "Provider"
+              }
+            ]
+          },
+          {
+            "name": "FileContent",
+            "fields": [
+              {
+                "id": 1,
+                "name": "content",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "status",
+                "type": "int32"
+              },
+              {
+                "id": 3,
+                "name": "path",
+                "type": "string"
+              },
+              {
+                "id": 4,
+                "name": "commit_id",
+                "type": "string"
+              },
+              {
+                "id": 5,
+                "name": "blob_id",
+                "type": "string"
+              },
+              {
+                "id": 6,
+                "name": "error",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "FileBatchContentResponse",
+            "fields": [
+              {
+                "id": 1,
+                "name": "file_contents",
+                "type": "FileContent",
+                "is_repeated": true
+              }
+            ]
+          },
+          {
+            "name": "FindFilesInBranchRequest",
+            "fields": [
+              {
+                "id": 1,
+                "name": "slug",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "branch",
+                "type": "string"
+              },
+              {
+                "id": 6,
+                "name": "ref",
+                "type": "string"
+              },
+              {
+                "id": 3,
+                "name": "path",
+                "type": "string"
+              },
+              {
+                "id": 4,
+                "name": "pagination",
+                "type": "PageRequest"
+              },
+              {
+                "id": 5,
+                "name": "provider",
+                "type": "Provider"
+              }
+            ]
+          },
+          {
+            "name": "FindFilesInBranchResponse",
+            "fields": [
+              {
+                "id": 1,
+                "name": "file",
+                "type": "FileChange",
+                "is_repeated": true
+              },
+              {
+                "id": 2,
+                "name": "pagination",
+                "type": "PageResponse"
+              }
+            ]
+          },
+          {
+            "name": "FindFilesInCommitRequest",
+            "fields": [
+              {
+                "id": 1,
+                "name": "slug",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "ref",
+                "type": "string"
+              },
+              {
+                "id": 3,
+                "name": "path",
+                "type": "string"
+              },
+              {
+                "id": 4,
+                "name": "pagination",
+                "type": "PageRequest"
+              },
+              {
+                "id": 5,
+                "name": "provider",
+                "type": "Provider"
+              }
+            ]
+          },
+          {
+            "name": "FindFilesInCommitResponse",
+            "fields": [
+              {
+                "id": 1,
+                "name": "file",
+                "type": "FileChange",
+                "is_repeated": true
+              },
+              {
+                "id": 2,
+                "name": "pagination",
+                "type": "PageResponse"
+              }
+            ]
+          },
+          {
+            "name": "FileChange",
+            "fields": [
+              {
+                "id": 1,
+                "name": "path",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "content_type",
+                "type": "ContentType"
+              },
+              {
+                "id": 3,
+                "name": "commit_id",
+                "type": "string"
+              },
+              {
+                "id": 4,
+                "name": "blob_id",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "IsLatestFileRequest",
+            "fields": [
+              {
+                "id": 1,
+                "name": "slug",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "path",
+                "type": "string"
+              },
+              {
+                "id": 3,
+                "name": "branch",
+                "type": "string"
+              },
+              {
+                "id": 4,
+                "name": "ref",
+                "type": "string"
+              },
+              {
+                "id": 5,
+                "name": "commit_id",
+                "type": "string"
+              },
+              {
+                "id": 6,
+                "name": "blob_id",
+                "type": "string"
+              },
+              {
+                "id": 7,
+                "name": "provider",
+                "type": "Provider"
+              }
+            ]
+          },
+          {
+            "name": "IsLatestFileResponse",
+            "fields": [
+              {
+                "id": 1,
+                "name": "latest",
+                "type": "bool"
+              }
+            ]
+          },
+          {
+            "name": "CreatePRRequest",
+            "fields": [
+              {
+                "id": 1,
+                "name": "slug",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "title",
+                "type": "string"
+              },
+              {
+                "id": 3,
+                "name": "body",
+                "type": "string"
+              },
+              {
+                "id": 4,
+                "name": "source",
+                "type": "string"
+              },
+              {
+                "id": 5,
+                "name": "target",
+                "type": "string"
+              },
+              {
+                "id": 6,
+                "name": "provider",
+                "type": "Provider"
+              }
+            ]
+          },
+          {
+            "name": "CreatePRResponse",
+            "fields": [
+              {
+                "id": 1,
+                "name": "status",
+                "type": "int32"
+              },
+              {
+                "id": 2,
+                "name": "number",
+                "type": "int32"
+              },
+              {
+                "id": 3,
+                "name": "error",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "FindFilesInPRRequest",
+            "fields": [
+              {
+                "id": 1,
+                "name": "slug",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "number",
+                "type": "int32"
+              },
+              {
+                "id": 3,
+                "name": "pagination",
+                "type": "PageRequest"
+              },
+              {
+                "id": 4,
+                "name": "provider",
+                "type": "Provider"
+              }
+            ]
+          },
+          {
+            "name": "PRFile",
+            "fields": [
+              {
+                "id": 1,
+                "name": "path",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "added",
+                "type": "bool"
+              },
+              {
+                "id": 3,
+                "name": "renamed",
+                "type": "bool"
+              },
+              {
+                "id": 4,
+                "name": "deleted",
+                "type": "bool"
+              },
+              {
+                "id": 5,
+                "name": "prev_file_path",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "FindFilesInPRResponse",
+            "fields": [
+              {
+                "id": 1,
+                "name": "files",
+                "type": "PRFile",
+                "is_repeated": true
+              },
+              {
+                "id": 2,
+                "name": "pagination",
+                "type": "PageResponse"
+              }
+            ]
+          },
+          {
+            "name": "CreateBranchRequest",
+            "fields": [
+              {
+                "id": 1,
+                "name": "slug",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "name",
+                "type": "string"
+              },
+              {
+                "id": 3,
+                "name": "commit_id",
+                "type": "string"
+              },
+              {
+                "id": 4,
+                "name": "provider",
+                "type": "Provider"
+              }
+            ]
+          },
+          {
+            "name": "CreateBranchResponse",
+            "fields": [
+              {
+                "id": 1,
+                "name": "status",
+                "type": "int32"
+              },
+              {
+                "id": 2,
+                "name": "error",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "GetLatestCommitRequest",
+            "fields": [
+              {
+                "id": 1,
+                "name": "slug",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "branch",
+                "type": "string"
+              },
+              {
+                "id": 4,
+                "name": "ref",
+                "type": "string"
+              },
+              {
+                "id": 3,
+                "name": "provider",
+                "type": "Provider"
+              }
+            ]
+          },
+          {
+            "name": "GetLatestCommitResponse",
+            "fields": [
+              {
+                "id": 1,
+                "name": "commit_id",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "status",
+                "type": "int32"
+              },
+              {
+                "id": 3,
+                "name": "error",
+                "type": "string"
+              },
+              {
+                "id": 4,
+                "name": "commit",
+                "type": "Commit"
+              }
+            ]
+          },
+          {
+            "name": "ListBranchesRequest",
+            "fields": [
+              {
+                "id": 1,
+                "name": "slug",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "pagination",
+                "type": "PageRequest"
+              },
+              {
+                "id": 3,
+                "name": "provider",
+                "type": "Provider"
+              }
+            ]
+          },
+          {
+            "name": "ListBranchesResponse",
+            "fields": [
+              {
+                "id": 1,
+                "name": "branches",
+                "type": "string",
+                "is_repeated": true
+              },
+              {
+                "id": 2,
+                "name": "pagination",
+                "type": "PageResponse"
+              },
+              {
+                "id": 3,
+                "name": "status",
+                "type": "int32"
+              },
+              {
+                "id": 4,
+                "name": "error",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "CompareCommitsRequest",
+            "fields": [
+              {
+                "id": 1,
+                "name": "slug",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "source",
+                "type": "string"
+              },
+              {
+                "id": 3,
+                "name": "target",
+                "type": "string"
+              },
+              {
+                "id": 4,
+                "name": "pagination",
+                "type": "PageRequest"
+              },
+              {
+                "id": 5,
+                "name": "provider",
+                "type": "Provider"
+              }
+            ]
+          },
+          {
+            "name": "CompareCommitsResponse",
+            "fields": [
+              {
+                "id": 1,
+                "name": "files",
+                "type": "PRFile",
+                "is_repeated": true
+              },
+              {
+                "id": 2,
+                "name": "pagination",
+                "type": "PageResponse"
+              }
+            ]
+          },
+          {
+            "name": "ListCommitsRequest",
+            "fields": [
+              {
+                "id": 1,
+                "name": "slug",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "branch",
+                "type": "string"
+              },
+              {
+                "id": 3,
+                "name": "ref",
+                "type": "string"
+              },
+              {
+                "id": 4,
+                "name": "pagination",
+                "type": "PageRequest"
+              },
+              {
+                "id": 5,
+                "name": "provider",
+                "type": "Provider"
+              },
+              {
+                "id": 6,
+                "name": "filePath",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "ListCommitsResponse",
+            "fields": [
+              {
+                "id": 1,
+                "name": "commit_ids",
+                "type": "string",
+                "is_repeated": true
+              },
+              {
+                "id": 2,
+                "name": "pagination",
+                "type": "PageResponse"
+              }
+            ]
+          },
+          {
+            "name": "GetLatestCommitOnFileRequest",
+            "fields": [
+              {
+                "id": 1,
+                "name": "slug",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "branch",
+                "type": "string"
+              },
+              {
+                "id": 3,
+                "name": "provider",
+                "type": "Provider"
+              },
+              {
+                "id": 4,
+                "name": "filePath",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "GetLatestCommitOnFileResponse",
+            "fields": [
+              {
+                "id": 1,
+                "name": "commit_id",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "error",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "ListCommitsInPRRequest",
+            "fields": [
+              {
+                "id": 1,
+                "name": "slug",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "number",
+                "type": "int64"
+              },
+              {
+                "id": 3,
+                "name": "pagination",
+                "type": "PageRequest"
+              },
+              {
+                "id": 4,
+                "name": "provider",
+                "type": "Provider"
+              }
+            ]
+          },
+          {
+            "name": "ListCommitsInPRResponse",
+            "fields": [
+              {
+                "id": 1,
+                "name": "commits",
+                "type": "Commit",
+                "is_repeated": true
+              },
+              {
+                "id": 2,
+                "name": "pagination",
+                "type": "PageResponse"
+              }
+            ]
+          },
+          {
+            "name": "GithubWebhookEvents",
+            "fields": [
+              {
+                "id": 1,
+                "name": "events",
+                "type": "GithubWebhookEvent",
+                "is_repeated": true
+              }
+            ]
+          },
+          {
+            "name": "GitlabWebhookEvents",
+            "fields": [
+              {
+                "id": 1,
+                "name": "events",
+                "type": "GitlabWebhookEvent",
+                "is_repeated": true
+              }
+            ]
+          },
+          {
+            "name": "BitbucketCloudWebhookEvents",
+            "fields": [
+              {
+                "id": 1,
+                "name": "events",
+                "type": "BitbucketCloudWebhookEvent",
+                "is_repeated": true
+              }
+            ]
+          },
+          {
+            "name": "BitbucketServerWebhookEvents",
+            "fields": [
+              {
+                "id": 1,
+                "name": "events",
+                "type": "BitbucketServerWebhookEvent",
+                "is_repeated": true
+              }
+            ]
+          },
+          {
+            "name": "NativeEvents",
+            "fields": [
+              {
+                "id": 1,
+                "name": "github",
+                "type": "GithubWebhookEvents"
+              },
+              {
+                "id": 2,
+                "name": "gitlab",
+                "type": "GitlabWebhookEvents"
+              },
+              {
+                "id": 3,
+                "name": "bitbucket_cloud",
+                "type": "BitbucketCloudWebhookEvents"
+              },
+              {
+                "id": 4,
+                "name": "bitbucket_server",
+                "type": "BitbucketServerWebhookEvents"
+              }
+            ]
+          },
+          {
+            "name": "CreateWebhookRequest",
+            "fields": [
+              {
+                "id": 1,
+                "name": "slug",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "name",
+                "type": "string"
+              },
+              {
+                "id": 3,
+                "name": "target",
+                "type": "string"
+              },
+              {
+                "id": 4,
+                "name": "secret",
+                "type": "string"
+              },
+              {
+                "id": 5,
+                "name": "nativeEvents",
+                "type": "NativeEvents"
+              },
+              {
+                "id": 6,
+                "name": "skipVerify",
+                "type": "bool"
+              },
+              {
+                "id": 7,
+                "name": "provider",
+                "type": "Provider"
+              }
+            ]
+          },
+          {
+            "name": "WebhookResponse",
+            "fields": [
+              {
+                "id": 1,
+                "name": "id",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "name",
+                "type": "string"
+              },
+              {
+                "id": 3,
+                "name": "target",
+                "type": "string"
+              },
+              {
+                "id": 4,
+                "name": "nativeEvents",
+                "type": "NativeEvents"
+              },
+              {
+                "id": 5,
+                "name": "active",
+                "type": "bool"
+              },
+              {
+                "id": 6,
+                "name": "skipVerify",
+                "type": "bool"
+              }
+            ]
+          },
+          {
+            "name": "CreateWebhookResponse",
+            "fields": [
+              {
+                "id": 1,
+                "name": "webhook",
+                "type": "WebhookResponse"
+              },
+              {
+                "id": 2,
+                "name": "status",
+                "type": "int32"
+              },
+              {
+                "id": 3,
+                "name": "error",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "DeleteWebhookRequest",
+            "fields": [
+              {
+                "id": 1,
+                "name": "slug",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "id",
+                "type": "string"
+              },
+              {
+                "id": 3,
+                "name": "provider",
+                "type": "Provider"
+              }
+            ]
+          },
+          {
+            "name": "DeleteWebhookResponse",
+            "fields": [
+              {
+                "id": 1,
+                "name": "status",
+                "type": "int32"
+              },
+              {
+                "id": 2,
+                "name": "error",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "ListWebhooksRequest",
+            "fields": [
+              {
+                "id": 1,
+                "name": "slug",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "pagination",
+                "type": "PageRequest"
+              },
+              {
+                "id": 3,
+                "name": "provider",
+                "type": "Provider"
+              }
+            ]
+          },
+          {
+            "name": "ListWebhooksResponse",
+            "fields": [
+              {
+                "id": 1,
+                "name": "webhooks",
+                "type": "WebhookResponse",
+                "is_repeated": true
+              },
+              {
+                "id": 2,
+                "name": "status",
+                "type": "int32"
+              },
+              {
+                "id": 3,
+                "name": "error",
+                "type": "string"
+              },
+              {
+                "id": 4,
+                "name": "pagination",
+                "type": "PageResponse"
+              }
+            ]
+          },
+          {
+            "name": "GetAuthenticatedUserRequest",
+            "fields": [
+              {
+                "id": 1,
+                "name": "provider",
+                "type": "Provider"
+              }
+            ]
+          },
+          {
+            "name": "GetAuthenticatedUserResponse",
+            "fields": [
+              {
+                "id": 1,
+                "name": "username",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "error",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "GetUserReposRequest",
+            "fields": [
+              {
+                "id": 1,
+                "name": "pagination",
+                "type": "PageRequest"
+              },
+              {
+                "id": 2,
+                "name": "provider",
+                "type": "Provider"
+              }
+            ]
+          },
+          {
+            "name": "GetUserReposResponse",
+            "fields": [
+              {
+                "id": 1,
+                "name": "repos",
+                "type": "Repository",
+                "is_repeated": true
+              },
+              {
+                "id": 2,
+                "name": "pagination",
+                "type": "PageResponse"
+              },
+              {
+                "id": 3,
+                "name": "status",
+                "type": "int32"
+              },
+              {
+                "id": 4,
+                "name": "error",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "FindPRRequest",
+            "fields": [
+              {
+                "id": 1,
+                "name": "number",
+                "type": "int64"
+              },
+              {
+                "id": 2,
+                "name": "slug",
+                "type": "string"
+              },
+              {
+                "id": 3,
+                "name": "provider",
+                "type": "Provider"
+              }
+            ]
+          },
+          {
+            "name": "FindCommitRequest",
+            "fields": [
+              {
+                "id": 1,
+                "name": "slug",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "ref",
+                "type": "string"
+              },
+              {
+                "id": 3,
+                "name": "provider",
+                "type": "Provider"
+              }
+            ]
+          },
+          {
+            "name": "FindPRResponse",
+            "fields": [
+              {
+                "id": 1,
+                "name": "pr",
+                "type": "PullRequest"
+              },
+              {
+                "id": 2,
+                "name": "status",
+                "type": "int32"
+              },
+              {
+                "id": 3,
+                "name": "error",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "FindCommitResponse",
+            "fields": [
+              {
+                "id": 1,
+                "name": "status",
+                "type": "int32"
+              },
+              {
+                "id": 2,
+                "name": "error",
+                "type": "string"
+              },
+              {
+                "id": 3,
+                "name": "commit",
+                "type": "Commit"
+              }
+            ]
+          }
+        ],
+        "services": [
+          {
+            "name": "SCM",
+            "rpcs": [
+              {
+                "name": "ParseWebhook",
+                "in_type": "ParseWebhookRequest",
+                "out_type": "ParseWebhookResponse"
+              },
+              {
+                "name": "GetFile",
+                "in_type": "GetFileRequest",
+                "out_type": "FileContent"
+              },
+              {
+                "name": "GetBatchFile",
+                "in_type": "GetBatchFileRequest",
+                "out_type": "FileBatchContentResponse"
+              },
+              {
+                "name": "GetLatestFile",
+                "in_type": "GetLatestFileRequest",
+                "out_type": "FileContent"
+              },
+              {
+                "name": "IsLatestFile",
+                "in_type": "IsLatestFileRequest",
+                "out_type": "IsLatestFileResponse"
+              },
+              {
+                "name": "FindFilesInBranch",
+                "in_type": "FindFilesInBranchRequest",
+                "out_type": "FindFilesInBranchResponse"
+              },
+              {
+                "name": "FindFilesInCommit",
+                "in_type": "FindFilesInCommitRequest",
+                "out_type": "FindFilesInCommitResponse"
+              },
+              {
+                "name": "PushFile",
+                "in_type": "FileModifyRequest",
+                "out_type": "FileContent"
+              },
+              {
+                "name": "CreateFile",
+                "in_type": "FileModifyRequest",
+                "out_type": "CreateFileResponse"
+              },
+              {
+                "name": "DeleteFile",
+                "in_type": "DeleteFileRequest",
+                "out_type": "DeleteFileResponse"
+              },
+              {
+                "name": "UpdateFile",
+                "in_type": "FileModifyRequest",
+                "out_type": "UpdateFileResponse"
+              },
+              {
+                "name": "CreatePR",
+                "in_type": "CreatePRRequest",
+                "out_type": "CreatePRResponse"
+              },
+              {
+                "name": "FindPR",
+                "in_type": "FindPRRequest",
+                "out_type": "FindPRResponse"
+              },
+              {
+                "name": "FindCommit",
+                "in_type": "FindCommitRequest",
+                "out_type": "FindCommitResponse"
+              },
+              {
+                "name": "FindFilesInPR",
+                "in_type": "FindFilesInPRRequest",
+                "out_type": "FindFilesInPRResponse"
+              },
+              {
+                "name": "CreateBranch",
+                "in_type": "CreateBranchRequest",
+                "out_type": "CreateBranchResponse"
+              },
+              {
+                "name": "GetLatestCommit",
+                "in_type": "GetLatestCommitRequest",
+                "out_type": "GetLatestCommitResponse"
+              },
+              {
+                "name": "ListBranches",
+                "in_type": "ListBranchesRequest",
+                "out_type": "ListBranchesResponse"
+              },
+              {
+                "name": "ListCommits",
+                "in_type": "ListCommitsRequest",
+                "out_type": "ListCommitsResponse"
+              },
+              {
+                "name": "CompareCommits",
+                "in_type": "CompareCommitsRequest",
+                "out_type": "CompareCommitsResponse"
+              },
+              {
+                "name": "GetLatestCommitOnFile",
+                "in_type": "GetLatestCommitOnFileRequest",
+                "out_type": "GetLatestCommitOnFileResponse"
+              },
+              {
+                "name": "ListCommitsInPR",
+                "in_type": "ListCommitsInPRRequest",
+                "out_type": "ListCommitsInPRResponse"
+              },
+              {
+                "name": "GetAuthenticatedUser",
+                "in_type": "GetAuthenticatedUserRequest",
+                "out_type": "GetAuthenticatedUserResponse"
+              },
+              {
+                "name": "GetUserRepos",
+                "in_type": "GetUserReposRequest",
+                "out_type": "GetUserReposResponse"
+              },
+              {
+                "name": "CreateWebhook",
+                "in_type": "CreateWebhookRequest",
+                "out_type": "CreateWebhookResponse"
+              },
+              {
+                "name": "DeleteWebhook",
+                "in_type": "DeleteWebhookRequest",
+                "out_type": "DeleteWebhookResponse"
+              },
+              {
+                "name": "ListWebhooks",
+                "in_type": "ListWebhooksRequest",
+                "out_type": "ListWebhooksResponse"
+              }
+            ]
+          }
+        ],
+        "imports": [
+          {
+            "path": "google/protobuf/timestamp.proto"
+          }
+        ],
+        "package": {
+          "name": "io.harness.product.ci.scm.proto"
+        },
+        "options": [
+          {
+            "name": "java_multiple_files",
+            "value": "true"
+          },
+          {
+            "name": "go_package",
+            "value": "ciscmpb"
+          }
+        ]
+      }
+    }
+  ]
+}
