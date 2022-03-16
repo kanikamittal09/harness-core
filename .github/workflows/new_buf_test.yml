@@ -18,7 +18,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Run `git checkout`
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       # Install the `buf` CLI
       - uses: bufbuild/buf-setup-action@v0.5.0
 
