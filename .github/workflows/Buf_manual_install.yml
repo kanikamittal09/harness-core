@@ -1,0 +1,38 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Buf_manual_install
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  pull_request:
+    branches: [ Approach3 ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+        with:
+            fetch-depth: 0
+      
+
+      # Runs a set of commands using the runners shell
+      - name: Run a multi-line script
+        run: |
+          git checkout feature
+          if ! [ -f buf.tar.gz ]; then
+            curl -L -o buf.tar.gz https://github.com/bufbuild/buf/releases/download/v1.1.0/buf-Linux-x86_64.tar.gz        
+          fi
+          tar xzf buf.tar.gz
+          ./buf breaking --against '.git#branch=Approach3'
+          echo $(./buf breaking --against '.git#branch=Approach3')
