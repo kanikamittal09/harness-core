@@ -33,10 +33,9 @@ jobs:
           git checkout ${{ github.base_ref }}
           git status
           git diff --name-only Approach3 Approach3fea
-          buf breaking --against '.git#branch=${{ github.base_ref }}'
+          echo $(buf breaking --against '.git#branch=${{ github.base_ref }}')
           for i in $(git diff --name-only ${{ github.base_ref }} ${{ github.head_ref }} | grep \.proto$)                                             
           do (echo $i;
-            buf breaking --against '.git#branch=${{ github.base_ref }}' --path $i > message.txt;
-            cat messsage.txt
+            echo $(buf breaking --against '.git#branch=${{ github.base_ref }}' --path $i );
           )
           done
