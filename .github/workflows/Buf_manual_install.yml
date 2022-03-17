@@ -33,5 +33,7 @@ jobs:
           curl -L -o buf/bin/buf https://github.com/bufbuild/buf/releases/download/v1.1.0/buf-Linux-x86_64.tar.gz
           chmod +x buf/bin/buf
           echo "$GITHUB_WORKSPACE/buf/bin" >> $GITHUB_PATH
+      - name: buf breaking
+        run: |
           buf breaking --against '.git#branch=Approach3'
           echo $(buf breaking --against '.git#branch=Approach3')
