@@ -33,6 +33,10 @@ jobs:
           curl -L -o buf/bin/buf https://github.com/bufbuild/buf/releases/download/v1.1.0/buf-Linux-x86_64
           chmod +x buf/bin/buf
           echo "$GITHUB_WORKSPACE/buf/bin" >> $GITHUB_PATH
+      - name: Checkout branches
+        run: |
+          git checkout ${{ github.head_ref }}
+          git checkout ${{ github.base_ref }}
       - name: buf breaking
         run: |
           buf breaking --against '.git#branch=Approach3'
