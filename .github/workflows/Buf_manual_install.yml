@@ -30,7 +30,7 @@ jobs:
       - name: Run a multi-line script
         run: |
           mkdir -p buf/bin
-          curl -L -o buf/bin/buf https://github.com/bufbuild/buf/releases/download/v1.1.0/buf-Linux-x86_64.tar.gz
+          curl -L -o buf/bin/buf https://github.com/bufbuild/buf/releases/download/v1.1.0/buf-Linux-x86_64
           chmod +x buf/bin/buf
           echo "$GITHUB_WORKSPACE/buf/bin" >> $GITHUB_PATH
       - name: buf breaking
