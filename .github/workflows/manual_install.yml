@@ -1,0 +1,52 @@
+name: Buf_test_Manual_Install
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on pull request events but only for the buf_manual branch
+  pull_request:
+    branches: [ buf_manual ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # fetch all branches and commits
+      - uses: actions/checkout@v3
+        with:
+            fetch-depth: 0
+
+      # Installs Buf and sets path
+      - name: Install buf
+        run: |
+          mkdir -p buf/bin
+          curl -L -o buf/bin/buf https://github.com/bufbuild/buf/releases/download/v1.1.0/buf-Linux-x86_64
+          chmod +x buf/bin/buf
+          echo "$GITHUB_WORKSPACE/buf/bin" >> $GITHUB_PATH
+      # Checkout branches
+      - name: Checkout branches
+        run: |
+          git checkout ${{ github.base_ref }}
+          git checkout ${{ github.head_ref }}
+          git status
+      # print git diff
+      - name: Print git diff
+        run: |
+          git diff --name-only ${{ github.base_ref }} ${{ github.head_ref }}
+      # run buf breaking for specific files and test which command prints output
+      - name: Run buf breaking for specific files
+        run: |
+          for i in $(git diff --name-only ${{ github.base_ref }} ${{ github.head_ref }} | grep \.proto$)                                             
+          do (
+            echo $i;
+            buf breaking --against '.git#branch=${{ github.base_ref }}' --path $i
+            echo $(buf breaking --against '.git#branch=${{ github.base_ref }}' --path $i );
+          )
+          done
