@@ -36,7 +36,7 @@ jobs:
       - name: Run buf breaking , get commits > get files per commit
         id : buf_breaking
         run: |
-          EXIT_CODE=0
+          echo "EXIT_CODE=0" >> $GITHUB_ENV
           for i in $(git log buf_manual..buf_manual_fea --format=format:%H)
           do (
             echo $i
@@ -44,13 +44,12 @@ jobs:
             do(
               echo $j;
               buf breaking --against '.git#branch=buf_manual' --path $j || TEMP_EXIT_CODE=$? 
-              echo $TEMP_EXIT_CODE
               if [ $TEMP_EXIT_CODE -ne 0 ]
               then
-                EXIT_CODE=$TEMP_EXIT_CODE
-                echo $EXIT_CODE
+                echo "EXIT_CODE=$TEMP_EXIT_CODE" >> $GITHUB_ENV
+                echo "${{ env.EXIT_CODE }}"
               fi
             )done
           )done 
-          echo $EXIT_CODE
+          echo "${{ env.EXIT_CODE }}"
           
