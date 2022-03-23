@@ -50,7 +50,4 @@ jobs:
               fi
             )done
           )done 
-          if [ $EXIT_CODE > 0 ]
-          then 
-            core.setFailed('Breaking changes detected!');
-          fi
+          echo $EXIT_CODE
