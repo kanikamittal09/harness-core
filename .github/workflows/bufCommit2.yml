@@ -43,7 +43,7 @@ jobs:
             for j in $(git show --pretty="" --name-only $i | grep \.proto$)
             do(
               echo $j;
-              buf breaking --against '.git#branch=buf_manual' --path $j || TEM_EXIT_CODE=$?
+              buf breaking --against '.git#branch=buf_manual' --path $j || TEMP_EXIT_CODE=$?
               if [ $TEMP_EXIT_CODE > 0]
               then
                 EXIT_CODE=$TEMP_EXIT_CODE
