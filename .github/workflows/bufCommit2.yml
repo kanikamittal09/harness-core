@@ -44,7 +44,8 @@ jobs:
             do(
               echo $j;
               buf breaking --against '.git#branch=buf_manual' --path $j || TEMP_EXIT_CODE=$? 
-              if [ $TEMP_EXIT_CODE > 0 ]
+              echo $TEMP_EXIT_CODE
+              if [ $TEMP_EXIT_CODE != 0 ]
               then
                 EXIT_CODE=$TEMP_EXIT_CODE
               fi
