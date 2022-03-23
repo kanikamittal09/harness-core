@@ -50,8 +50,13 @@ jobs:
                 echo $EXIT_CODE
               fi
              done
-            echo $EXIT_CODE
           done 
-          echo $EXIT_CODE
+          echo "::set-output name=EXIT_CODE::$EXIT_CODE"
+      - name: Check
+        if : steps.buf_breaking.outputs.EXIT_CODE != 0
+        uses: actions/github-script@v5
+        with:
+          script: |
+            core.setFailed('Breaking changes found!')
           
           
