@@ -38,29 +38,25 @@ jobs:
         run: |
           EXIT_CODE=0
           for i in $(git log buf_manual..buf_manual_fea --format=format:%H)
-          do (
+          do 
             echo $i
             for j in $(git show --pretty="" --name-only $i | grep \.proto$)
-            do(
+            do
               echo $j;
-              buf breaking --against '.git#branch=buf_manual' --path $j || TEMP_EXIT_CODE=$?
-              if [ $TEMP_EXIT_CODE > 0 ]
+              buf breaking --against '.git#branch=buf_manual' --path $j || TEMP_EXIT_CODE=$? 
+              if [ $TEMP_EXIT_CODE -ne 0 ]
               then
                 EXIT_CODE=$TEMP_EXIT_CODE
+                echo $EXIT_CODE
               fi
-            )done
-          )done 
-          if [ $EXIT_CODE > 0 ]
-          then 
-            echo "::set-output name=EXIT_CODE::$(echo $EXIT_CODE)"
-          else
-            echo "::set-output name=EXIT_CODE::0"
-          fi
-      - name: Output
+             done
+          done 
+          echo "::set-output name=EXIT_CODE::$EXIT_CODE"
+      - name: Check
+        if : steps.buf_breaking.outputs.EXIT_CODE != 0
         uses: actions/github-script@v5
-        if: steps.buf_breaking.outputs.EXIT_CODE != 0
         with:
           script: |
-            core.setFailed('Breaking changes detected!')
+            core.setFailed('Breaking changes found!')
           
           
