@@ -166,7 +166,6 @@ message TestingCapability {}
 message WinrmHostValidationParameters {
   string hostname = 4;
   int32 port = 2;
-  bool use_ssl = 3;
   string domain = 1;
 }
 
