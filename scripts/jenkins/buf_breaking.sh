@@ -34,7 +34,7 @@ do
 echo $i
 for j in $(git show --pretty="" --name-only $i | grep \.proto$)
 do
-    git cat-file -e develop:$j 2> /dev/null
+    git cat-file -e buf_pr:$j 2> /dev/null
     e=$?
     if [ $e -eq 0 ]     
     then
