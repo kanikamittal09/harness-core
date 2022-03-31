@@ -21,4 +21,5 @@ message PollingDocument {
 
 message PollingResponse {
   bool subscriptionStatus = 1;
+  int32 testfield = 2;
 }
