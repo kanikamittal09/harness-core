@@ -2,8 +2,8 @@
 curl -L -o buf1 https://github.com/bufbuild/buf/releases/download/v1.1.0/buf-Linux-x86_64 
 chmod +x buf1 
 ./buf1 --version 
-git fetch origin buf_test 
-git checkout buf_test 
+git fetch origin $1 
+git checkout $1 
 git status 
 EXIT_CODE=0                                 
 output=""
