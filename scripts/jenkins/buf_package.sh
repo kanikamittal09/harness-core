@@ -25,6 +25,7 @@ do
                 EXIT_CODE=100
             fi
         done
-    done     
+    done  
+done   
 echo $EXIT_CODE >> exit_code.txt
 echo $output >> output.txt                                                                     
