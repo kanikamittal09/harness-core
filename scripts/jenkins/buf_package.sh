@@ -27,5 +27,9 @@ do
         done
     done  
 done   
+if [ -z "$output" ]
+then
+  output="No Breaking Change"
+fi 
 echo $EXIT_CODE >> exit_code.txt
 echo $output >> output.txt                                                                     
