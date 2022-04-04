@@ -1,3 +1,4 @@
+#!/bin/bash
 curl -L -o buf1 https://github.com/bufbuild/buf/releases/download/v1.1.1/buf-Linux-x86_64
 chmod +x buf1 
 ./buf1 --version 
