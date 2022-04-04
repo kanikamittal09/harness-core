@@ -7,7 +7,7 @@ git checkout $1
 git status 
 EXIT_CODE=0
 output=""
-IFS=$'\n' bufOut=($(./buf1 breaking --against '.git#branch=packageTest' --error-format=text))
+IFS=$'\n' bufOut=($(./buf1 breaking --against '.git#branch=packageTest' ))
 for m in $(git log packageTest..$1 --format=format:%H )
 do
     echo $m
