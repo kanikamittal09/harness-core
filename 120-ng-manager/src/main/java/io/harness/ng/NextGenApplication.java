@@ -278,6 +278,7 @@ public class NextGenApplication extends Application<NextGenConfiguration> {
     initializeLogging();
     bootstrap.addCommand(new InspectCommand<>(this));
     bootstrap.addCommand(new ScanClasspathMetadataCommand());
+    bootstrap.addCommand(new OpenApiGenerationCommand(getOasConfig(new NextGenConfiguration(), true)));
     // Enable variable substitution with environment variables
     bootstrap.setConfigurationSourceProvider(new SubstitutingSourceProvider(
         bootstrap.getConfigurationSourceProvider(), new EnvironmentVariableSubstitutor(false)));
@@ -719,7 +720,11 @@ public class NextGenApplication extends Application<NextGenConfiguration> {
         ServerProperties.RESOURCE_VALIDATION_DISABLE, appConfig.isDisableResourceValidation());
   }
 
-  private OpenAPIConfiguration getOasConfig(NextGenConfiguration appConfig) {
+  public static OpenAPIConfiguration getOasConfig(NextGenConfiguration appConfig) {
+    return getOasConfig(appConfig, false);
+  }
+
+  public static OpenAPIConfiguration getOasConfig(NextGenConfiguration appConfig, boolean local) {
     OpenAPI oas = new OpenAPI();
     Info info =
         new Info()
@@ -730,14 +735,19 @@ public class NextGenApplication extends Application<NextGenConfiguration> {
             .version("3.0")
             .contact(new Contact().email("contact@harness.io"));
     oas.info(info);
-    URL baseurl = null;
+    String hostname = "localhost";
+    String basePathPrefix = "";
+    if (!local) {
+      hostname = appConfig.getHostname();
+      basePathPrefix = appConfig.getBasePathPrefix();
+    }
     try {
-      baseurl = new URL("https", appConfig.getHostname(), appConfig.getBasePathPrefix());
+      URL baseurl = new URL("https", hostname, basePathPrefix);
       Server server = new Server();
       server.setUrl(baseurl.toString());
       oas.servers(Collections.singletonList(server));
     } catch (MalformedURLException e) {
-      log.error("failed to set baseurl for server, {}/{}", appConfig.hostname, appConfig.getBasePathPrefix());
+      log.error("failed to set baseurl for server, {}/{}", hostname, basePathPrefix);
     }
     final Set<String> resourceClasses =
         getOAS3ResourceClassesOnly().stream().map(Class::getCanonicalName).collect(toSet());
