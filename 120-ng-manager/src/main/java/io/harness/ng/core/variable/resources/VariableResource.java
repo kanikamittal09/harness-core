@@ -51,8 +51,9 @@ public class VariableResource {
 
   @GET
   @Path("{identifier}")
-  public ResponseDTO<VariableResponseDTO> get(@PathParam(IDENTIFIER_KEY) String identifier,
-      @QueryParam(ACCOUNT_KEY) String accountIdentifier, @QueryParam(ORG_KEY) String orgIdentifier,
+  @Hidden
+  public ResponseDTO<VariableResponseDTO> get(@PathParam(IDENTIFIER_KEY) @NotNull String identifier,
+      @QueryParam(ACCOUNT_KEY) @NotNull String accountIdentifier, @QueryParam(ORG_KEY) String orgIdentifier,
       @QueryParam(PROJECT_KEY) String projectIdentifier) {
     Optional<VariableResponseDTO> variable =
         variableService.get(accountIdentifier, orgIdentifier, projectIdentifier, identifier);
