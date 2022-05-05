@@ -13,7 +13,6 @@ import io.harness.pms.contracts.service.VariableMergeResponseProto;
 import io.harness.pms.contracts.service.VariablesServiceGrpc.VariablesServiceImplBase;
 import io.harness.pms.contracts.service.VariablesServiceRequest;
 import io.harness.pms.mappers.VariablesResponseDtoMapper;
-import io.harness.pms.pipeline.service.PMSPipelineService;
 import io.harness.pms.variables.VariableCreatorMergeService;
 import io.harness.pms.variables.VariableMergeServiceResponse;
 
@@ -29,7 +28,7 @@ public class VariablesServiceImpl extends VariablesServiceImplBase {
   private final VariableCreatorMergeService variableCreatorMergeService;
 
   @Inject
-  public VariablesServiceImpl( VariableCreatorMergeService variableCreatorMergeService) {
+  public VariablesServiceImpl(VariableCreatorMergeService variableCreatorMergeService) {
     this.variableCreatorMergeService = variableCreatorMergeService;
   }
 
