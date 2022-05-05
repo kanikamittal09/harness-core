@@ -388,29 +388,6 @@ public class PMSPipelineServiceImpl implements PMSPipelineService {
     return stepCategory;
   }
 
-  @Override
-  public VariableMergeServiceResponse createVariablesResponse(String yaml, boolean newVersion) {
-    try {
-      return variableCreatorMergeService.createVariablesResponse(yaml, newVersion);
-    } catch (Exception ex) {
-      log.error("Error happened while creating variables for pipeline:", ex);
-      throw new InvalidRequestException(
-          format("Error happened while creating variables for pipeline: %s", ex.getMessage()));
-    }
-  }
-
-  @Override
-  public VariableMergeServiceResponse createVariablesResponseV2(
-      String accountId, String orgId, String projectId, String yaml) {
-    try {
-      return variableCreatorMergeService.createVariablesResponseV2(accountId, orgId, projectId, yaml);
-    } catch (Exception ex) {
-      log.error("Error happened while creating variables for pipeline:", ex);
-      throw new InvalidRequestException(
-          format("Error happened while creating variables for pipeline: %s", ex.getMessage()));
-    }
-  }
-
   // Todo: Remove only if there are no references to the pipeline
   @Override
   public boolean deleteAllPipelinesInAProject(String accountId, String orgId, String projectId) {
