@@ -37,6 +37,7 @@ import com.google.api.client.util.Lists;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import javax.ws.rs.core.Response;
 import jersey.repackaged.com.google.common.collect.Sets;
@@ -168,6 +169,18 @@ public class FileStoreResourceTest extends CategoryTest {
   @Test
   @Owner(developers = BOJAN)
   @Category(UnitTests.class)
+  public void testGetReferencedByTypes() {
+    ResponseDTO<List<EntityType>> response = fileStoreResource.getSupportedEntityTypes();
+    List<EntityType> pageResponse = response.getData();
+
+    assertThat(pageResponse).isNotNull();
+    assertThat(pageResponse.isEmpty()).isFalse();
+    assertThat(pageResponse.size()).isEqualTo(5);
+  }
+
+  @Test
+  @Owner(developers = BOJAN)
+  @Category(UnitTests.class)
   public void testListFilesWithFilterException() {
     when(fileStoreService.listFilesWithFilter(any(), any(), any(), any(), any(), any(), any()))
         .thenThrow(new InvalidRequestException("Can not apply both filter properties and saved filter together"));
@@ -193,5 +206,24 @@ public class FileStoreResourceTest extends CategoryTest {
     assertThat(returnedList).isNotNull();
     assertThat(returnedList.isEmpty()).isFalse();
     assertThat(returnedList.size()).isEqualTo(2);
+  }
+
+  @Test
+  @Owner(developers = BOJAN)
+  @Category(UnitTests.class)
+  public void testListReferencedByInScope() {
+    EntitySetupUsageDTO entitySetupUsage = EntitySetupUsageDTO.builder().build();
+    final Page<EntitySetupUsageDTO> entityServiceUsageList =
+        new PageImpl<>(Collections.singletonList(entitySetupUsage));
+    when(fileStoreService.listReferencedByInScope(any(), any(), any(), any(), any()))
+        .thenReturn(entityServiceUsageList);
+
+    ResponseDTO<Page<EntitySetupUsageDTO>> response =
+        fileStoreResource.getReferencedByInScope(1, 10, ACCOUNT, ORG, PROJECT, EntityType.PIPELINES);
+    Page<EntitySetupUsageDTO> returnedList = response.getData();
+
+    assertThat(returnedList).isNotNull();
+    assertThat(returnedList.getContent().size()).isEqualTo(1);
+    assertThat(returnedList.getContent()).containsExactly(entitySetupUsage);
   }
 }
