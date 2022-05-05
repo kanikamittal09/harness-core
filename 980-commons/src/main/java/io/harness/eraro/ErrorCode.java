@@ -602,7 +602,8 @@ public enum ErrorCode {
   AZURE_AUTHENTICATION_ERROR,
   AZURE_CONFIG_ERROR,
   DATA_PROCESSING_ERROR,
-  INVALID_AZURE_AKS_REQUEST;
+  INVALID_AZURE_AKS_REQUEST,
+  PR_CHECK;
 
   private Status status = BAD_REQUEST;
   private String description;
