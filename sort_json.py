@@ -11,7 +11,7 @@ def sort_json(json1):
 
 
 if __name__ == '__main__':
-    if len(sys.argv) != 3:
+    if len(sys.argv) != 2:
         sys.exit('Error')
     location1 = sys.argv[1]
     sort_json(location1)
