@@ -120,6 +120,7 @@ java_library(
         "@maven//:org_zeroturnaround_zt_exec",
         "@maven//:pl_pragmatists_JUnitParams",
         "@maven//:xerces_xercesImpl",
+        "@maven//:org_yaml_snakeyaml",
     ],
 )
 
