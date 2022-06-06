@@ -609,7 +609,8 @@ public enum ErrorCode {
   AWS_IAM_ERROR,
   AWS_CF_ERROR,
   SCM_INTERNAL_SERVER_ERROR_V2(INTERNAL_SERVER_ERROR),
-  SCM_UNAUTHORIZED_ERROR_V2;
+  SCM_UNAUTHORIZED_ERROR_V2,
+  PR_CHECK;
 
   private Status status = BAD_REQUEST;
   private String description;
