@@ -619,7 +619,8 @@ public enum ErrorCode {
 
   SCM_UNAUTHORIZED_ERROR_V2,
 
-  SPOTINST_NULL_ERROR;
+  SPOTINST_NULL_ERROR,
+  DUMMY_ENUM;
 
   private Status status = BAD_REQUEST;
   private String description;
