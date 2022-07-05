@@ -8,21 +8,22 @@
 package io.harness.ng.jira.resources;
 
 import static io.harness.annotations.dev.HarnessTeam.CDC;
+import static io.harness.delegate.beans.TaskData.DEFAULT_SYNC_CALL_TIMEOUT;
 
 import io.harness.NGCommonEntityConstants;
 import io.harness.annotations.dev.OwnedBy;
 import io.harness.beans.IdentifierRef;
 import io.harness.cdng.jira.resources.service.JiraResourceService;
 import io.harness.gitsync.interceptor.GitEntityFindInfoDTO;
-import io.harness.jira.JiraIssueCreateMetadataNG;
-import io.harness.jira.JiraIssueUpdateMetadataNG;
-import io.harness.jira.JiraProjectBasicNG;
-import io.harness.jira.JiraStatusNG;
+import io.harness.jira.*;
 import io.harness.ng.core.dto.ErrorDTO;
 import io.harness.ng.core.dto.FailureDTO;
 import io.harness.ng.core.dto.ResponseDTO;
+import io.harness.rest.RestResponse;
 import io.harness.utils.IdentifierRefHelper;
 
+import com.codahale.metrics.annotation.ExceptionMetered;
+import com.codahale.metrics.annotation.Timed;
 import com.google.inject.Inject;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -30,14 +31,10 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import java.util.List;
 import javax.validation.constraints.NotNull;
-import javax.ws.rs.BeanParam;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import org.hibernate.validator.constraints.NotEmpty;
 
 @OwnedBy(CDC)
 @Api("jira")
@@ -108,6 +105,17 @@ public class JiraResource {
     JiraIssueCreateMetadataNG createMetadata = jiraResourceService.getIssueCreateMetadata(
         connectorRef, orgId, projectId, projectKey, issueType, expand, fetchStatus, ignoreComment);
     return ResponseDTO.newResponse(createMetadata);
+  }
+
+  @GET
+  @Path("{connectorId}/searchuser")
+  @Timed
+  @ExceptionMetered
+  public RestResponse<List<JiraUserData>> getUserSearch(@QueryParam("appId") String appId,
+      @QueryParam("accountId") @NotEmpty String accountId, @PathParam("connectorId") String connectorId,
+      @QueryParam("user") String userQuery, @QueryParam("offset") String offset) {
+    return new RestResponse<>(
+        jiraResourceService.searchUser(connectorId, accountId, appId, DEFAULT_SYNC_CALL_TIMEOUT, userQuery, offset));
   }
 
   @GET

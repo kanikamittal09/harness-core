@@ -111,6 +111,13 @@ public class JiraTaskNGHandler {
     return JiraTaskNGResponse.builder().issue(issue).build();
   }
 
+  public JiraTaskNGResponse searchUser(JiraTaskNGParameters params) {
+    JiraClient jiraClient = getJiraClient(params);
+    JiraIssueNG issue =
+        (JiraIssueNG) jiraClient.getUsers(params.getAccountId(), params.getUserQuery(), params.getStartAt());
+    return JiraTaskNGResponse.builder().issue(issue).build();
+  }
+
   private JiraClient getJiraClient(JiraTaskNGParameters parameters) {
     return new JiraClient(JiraRequestResponseMapper.toJiraInternalConfig(parameters));
   }
