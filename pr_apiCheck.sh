@@ -83,6 +83,10 @@ fi
 
 
 #BAZEL_ARGS="--announce_rc --keep_going --cache_test_results=yes --test_output=errors --show_timestamps --verbose_failures --remote_max_connections=1000 --remote_retries=1"
+git checkout $1
+last_commit=$(git log -1 --format="%H")
+email_id=$(git show $last_commit | grep Author | cut -d '<' -f2- | sed 's/.$//')
+export EMAIL_ID=$email_id
 echo "=============SOURCE BRANCH================"
 if [ $NG_MANAGER_T -eq 0 ]
 then 
