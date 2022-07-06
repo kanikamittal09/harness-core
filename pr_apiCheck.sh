@@ -96,9 +96,10 @@ fi
 
 
 echo "=============SOURCE BRANCH================"
-git checkout $3
+git checkout $2
 last_commit=$(git log -1 --format="%H")
 email_id=$(git show $last_commit | grep Author | cut -d '<' -f2- | sed 's/.$//')
+echo $email_id >> email.txt
 export EMAIL_ID=$email_id
 
 if [ $NG_MANAGER_T -eq 0 ]
@@ -333,4 +334,5 @@ then
 fi
 echo "API Backward Incompatibility issues in services :"$issues
 
-export EXIT_CODE=$exit_code
+exit $exit_code
+
