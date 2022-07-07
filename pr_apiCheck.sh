@@ -147,7 +147,7 @@ else
     PIPELINE_SERVICE_S=1
 fi 
 
-if [ $TEMPLATE_SERVICE_T=0 ]
+if [ $TEMPLATE_SERVICE_T -eq 0 ]
 then
     echo "BUILD TEMPLATE_SERVICE"
     TEMPLATE_SERVICE_S=0
@@ -156,7 +156,7 @@ else
     TEMPLATE_SERVICE_S=1
 fi
 
-if [ $PLATFORM_SERVICE_T=0 ]
+if [ $PLATFORM_SERVICE_T -eq 0 ]
 then
     echo "BUILD PLATFORM_SERVICE"            
     PLATFORM_SERVICE_S=0           
@@ -165,7 +165,7 @@ else
     PLATFORM_SERVICE_S=1
 fi
 
-if [ $ACCESS_CONTROL_T=0 ]
+if [ $ACCESS_CONTROL_T -eq 0 ]
 then
     echo "BUILD ACCESS_CONTROL"
     ACCESS_CONTROL_S=0         
@@ -236,17 +236,20 @@ fi
 
 exit_code=0
 issues=""
+comp=""
 echo "=============API BACKWARD COMPATIBILITY CHECKS================"
 rc=0
 echo 120-NG-MANAGER
 if [[ $NG_MANAGER_S -eq 0 ]] && [[ $NG_MANAGER_T -eq 0 ]]
 then    
     java -jar with_handle_schema.jar target/120_target.json target/120_source.json --fail-on-incompatible || rc=$?
-    if [ $rc -eq 1 ]                                                                                                      
+    if [ $rc -ne 0 ]                                                                                                      
     then
         exit_code=1
         issues+="120-NG-MANAGER "
     fi 
+else
+    comp+="120-NG-MANAGER "
 fi
 
 rc=0
@@ -254,11 +257,13 @@ echo 290-DASHBOARD-SERVICE
 if [[ $DASHBOARD_SERVICE_S -eq 0 ]] && [[ $DASHBOARD_SERVICE_T -eq 0 ]]
 then
     java -jar with_handle_schema.jar target/290_target.json target/290_source.json --fail-on-incompatible || rc=$?
-    if [ $rc -eq 1 ]                                                                                                      
+    if [ $rc -ne 0 ]                                                                                                      
     then
         exit_code=1
         issues+="290-DASHBOARD-SERVICE "
     fi
+else
+    comp+="290-DASHBOARD-SERVICE "
 fi 
 
 rc=0
@@ -266,11 +271,13 @@ echo 310-CI-MANAGER
 if [[ $CI_MANAGER_S -eq 0 ]] && [[ $CI_MANAGER_T -eq 0 ]]
 then
     java -jar with_handle_schema.jar target/310_target.json target/310_source.json --fail-on-incompatible || rc=$?
-    if [ $rc -eq 1 ]                                                                                                      
+    if [ $rc -ne 0 ]                                                                                                      
     then
         exit_code=1
         issues+="310-CI-MANAGER "
     fi
+else
+    comp+="310-CI-MANAGER "
 fi 
 
 rc=0
@@ -278,11 +285,13 @@ echo 340-CE-NEXTGEN
 if [[ $CE_NEXTGEN_S -eq 0 ]] && [[ $CE_NEXTGEN_T -eq 0 ]]
 then
     java -jar with_handle_schema.jar target/340_target.json target/340_source.json --fail-on-incompatible || rc=$?
-    if [ $rc -eq 1 ]                                                                                                      
+    if [ $rc -ne 0 ]                                                                                                      
     then
         exit_code=1
         issues+="340-CE-NEXTGEN "
     fi 
+else
+    comp+="340-CE-NEXTGEN "
 fi
 
 rc=0    
@@ -290,11 +299,13 @@ echo 800-PIPELINE-SERVICE
 if [[ $PIPELINE_SERVICE_S  -eq 0 ]] && [[ $PIPELINE_SERVICE_T  -eq 0 ]]
 then
     java -jar with_handle_schema.jar target/800_target.json target/800_source.json --fail-on-incompatible || rc=$?
-    if [ $rc -eq 1 ]                                                                                                      
+    if [ $rc -ne 0 ]                                                                                                      
     then
         exit_code=1
         issues+="800-PIPELINE-SERVICE "
     fi
+else
+    comp+="800-PIPELINE-SERVICE "
 fi    
 
 rc=0
@@ -302,11 +313,13 @@ echo 840-TEMPLATE-SERVICE
 if [[ $TEMPLATE_SERVICE_S -eq 0 ]] && [[ $TEMPLATE_SERVICE_T -eq 0 ]]
 then
     java -jar with_handle_schema.jar target/840_target.json target/840_source.json --fail-on-incompatible || rc=$?
-    if [ $rc -eq 1 ]                                                                                                      
+    if [ $rc -ne 0 ]                                                                                                      
     then
         exit_code=1
         issues+="840-TEMPLATE-SERVICE "
     fi
+else
+    comp+="840-TEMPLATE-SERVICE "
 fi 
 
 rc=0
@@ -314,11 +327,13 @@ echo PLATFORM-SERVICE
 if [[ $PLATFORM_SERVICE_S -eq 0 ]] && [[ $PLATFORM_SERVICE_T  -eq 0 ]]
 then
     java -jar with_handle_schema.jar target/platform_target.json target/platform_source.json --fail-on-incompatible || rc=$?
-    if [ $rc -eq 1 ]                                                                                                      
+    if [ $rc -ne 0 ]                                                                                                      
     then
         exit_code=1
         issues+="PLATFORM-SERVICE "
     fi 
+else
+    comp+="PLATFORM-SERVICE "
 fi
 
 rc=0
@@ -326,13 +341,16 @@ echo ACCESS-CONTROL
 if [[ $ACCESS_CONTROL_S -eq 0 ]] && [[ $ACCESS_CONTROL_T -eq 0 ]]
 then
     java -jar with_handle_schema.jar target/access_target.json target/access_source.json --fail-on-incompatible || rc=$?
-    if [ $rc -eq 1 ]                                                                                                      
+    if [ $rc -ne 0 ]                                                                                                      
     then
         exit_code=1
         issues+="ACCESS-CONTROL "
     fi
+else
+    comp+="ACCESS-CONTROL "
 fi
-echo "API Backward Incompatibility issues in services :"$issues
+echo "API Backward Incompatibility issues in services : "$issues
+echo "Compilation failure : "$comp
 
 exit $exit_code
 
