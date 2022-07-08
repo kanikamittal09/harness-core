@@ -30,6 +30,9 @@ bazel build ${BAZEL_ARGS} -- //platform-service/service:module_deploy.jar || PLA
 echo "BUILD ACCESS_CONTROL"
 ACCESS_CONTROL_T=0         
 bazel build ${BAZEL_ARGS} -- //access-control/service:module_deploy.jar || ACCESS_CONTROL_T=$?
+STO_MANAGER_T=0
+echo "BUILD STO_MANAGER"
+bazel build ${BAZEL_ARGS} -- //315-sto-manager:module_deploy.jar || STO_MANAGER_T=$?
 
 mkdir target
 
@@ -41,6 +44,7 @@ touch target/800_target.json
 touch target/840_target.json
 touch target/platform_target.json
 touch target/access_target.json
+touch target/315_target.json
 
 pwd
 ls
@@ -91,6 +95,12 @@ if [ $ACCESS_CONTROL_T -eq 0 ]
 then
     echo "====Generating Access-Control Target-Branch Api Spec===="
     java -jar bazel-bin/access-control/service/module_deploy.jar generate-openapi-spec target/access_target.json || ACCESS_CONTROL_T=$?
+fi
+
+if [ $STO_MANAGER_T -eq 0 ]
+then 
+    echo "====Generating STO-MANAGER Target-Branch Api Spec===="
+    java -jar bazel-bin/315-sto-manager/module_deploy.jar generate-openapi-spec target/315_target.json 315-sto-manager/sto-manager-config.yml || STO_MANAGER_T=$?
 fi
 
 
@@ -174,6 +184,17 @@ else
     ACCESS_CONTROL_S=0  
 fi
 
+if [ $STO_MANAGER_T -eq 0 ]
+then
+    echo "BUILD STO_MANAGER"
+    STO_MANAGER_S=0
+    bazel build ${BAZEL_ARGS} -- //315-sto-manager:module_deploy.jar || STO_MANAGER_S=$?
+else
+    STO_MANAGER_S=1
+fi
+
+
+
 touch target/120_source.json
 touch target/290_source.json
 touch target/310_source.json
@@ -182,6 +203,7 @@ touch target/800_source.json
 touch target/840_source.json
 touch target/platform_source.json
 touch target/access_source.json
+touch target/315_source.json
 
 pwd
 ls
@@ -232,6 +254,12 @@ if [ $ACCESS_CONTROL_S -eq 0 ]
 then
     echo "====Generating Access-Control Source-Branch Api Spec===="
     java -jar bazel-bin/access-control/service/module_deploy.jar generate-openapi-spec target/access_source.json || ACCESS_CONTROL_S=$?
+fi
+
+if [ $STO_MANAGER_S -eq 0 ]                                                                                              
+then
+    echo "====Generating STO-Manager Source-Branch Api Spec===="
+    java -jar bazel-bin/315-sto-manager/module_deploy.jar generate-openapi-spec target/315_source.json 315-sto-manager/sto-manager-config.yml || STO_MANAGER_S=$?
 fi
 
 exit_code=0
@@ -349,6 +377,22 @@ then
 else
     comp+="ACCESS-CONTROL "
 fi
+
+rc=0
+echo 315-STO-MANAGER
+if [[ $STO_MANAGER_S -eq 0 ]] && [[ $STO_MANAGER_T -eq 0 ]]
+then
+    java -jar with_handle_schema.jar target/315_target.json target/315_source.json --fail-on-incompatible || rc=$?
+    if [ $rc -ne 0 ]                                                                                                      
+    then
+        exit_code=1
+        issues+="315-STO-MANAGER "
+    fi 
+else
+    comp+="315-STO-MANAGER "
+fi
+
+
 echo "API Backward Incompatibility issues in services : "$issues
 echo "Compilation failure : "$comp
 
