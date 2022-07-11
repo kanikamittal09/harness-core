@@ -108,7 +108,7 @@ public class JiraResource {
   }
 
   @GET
-  @Path("{connectorId}/searchuser")
+  @Path("{connectorId}/searchUser")
   @Timed
   @ExceptionMetered
   public RestResponse<List<JiraUserData>> getUserSearch(@QueryParam("appId") String appId,
