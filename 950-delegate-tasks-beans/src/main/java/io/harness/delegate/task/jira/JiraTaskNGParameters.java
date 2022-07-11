@@ -52,7 +52,6 @@ public class JiraTaskNGParameters implements TaskParameters, ExecutionCapability
   String transitionName; // optional - find a particular transition that goes to desired status
 
   @Value
-  @Builder
   public class JiraUserSearchParams {
     String accountId;
     String userQuery;
