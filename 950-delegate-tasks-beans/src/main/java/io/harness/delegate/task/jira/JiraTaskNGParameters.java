@@ -50,9 +50,14 @@ public class JiraTaskNGParameters implements TaskParameters, ExecutionCapability
   // Transition to do while updating (optional).
   String transitionToStatus; // required in a transition
   String transitionName; // optional - find a particular transition that goes to desired status
-  String accountId;
-  String userQuery;
-  String startAt;
+
+  @Value
+  @Builder
+  public class JiraUserSearchParams {
+    String accountId;
+    String userQuery;
+    String startAt;
+  }
   // Fields sent while creating/updating issue.
   Map<String, String> fields;
   List<String> delegateSelectors;
