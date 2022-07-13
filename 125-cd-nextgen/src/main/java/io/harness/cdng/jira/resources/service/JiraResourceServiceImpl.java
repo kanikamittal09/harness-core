@@ -9,13 +9,10 @@ package io.harness.cdng.jira.resources.service;
 
 import static io.harness.annotations.dev.HarnessTeam.CDC;
 import static io.harness.connector.ConnectorModule.DEFAULT_CONNECTOR_SERVICE;
-import static io.harness.exception.WingsException.USER;
 import static io.harness.utils.DelegateOwner.getNGTaskSetupAbstractionsWithOwner;
 
 import io.harness.annotations.dev.OwnedBy;
 import io.harness.beans.DelegateTaskRequest;
-import io.harness.beans.ExecutionStatus;
-import io.harness.beans.FeatureName;
 import io.harness.beans.IdentifierRef;
 import io.harness.common.NGTaskType;
 import io.harness.connector.ConnectorInfoDTO;
@@ -32,15 +29,17 @@ import io.harness.delegate.task.jira.JiraTaskNGResponse;
 import io.harness.exception.HarnessJiraException;
 import io.harness.exception.InvalidRequestException;
 import io.harness.exception.WingsException;
-import io.harness.jira.*;
+import io.harness.jira.JiraActionNG;
+import io.harness.jira.JiraIssueCreateMetadataNG;
+import io.harness.jira.JiraIssueUpdateMetadataNG;
+import io.harness.jira.JiraProjectBasicNG;
+import io.harness.jira.JiraStatusNG;
+import io.harness.jira.JiraUserData;
 import io.harness.ng.core.BaseNGAccess;
 import io.harness.ng.core.NGAccess;
 import io.harness.secretmanagerclient.services.api.SecretManagerClientService;
 import io.harness.security.encryption.EncryptedDataDetail;
 import io.harness.service.DelegateGrpcClientWrapper;
-
-import software.wings.api.jira.JiraExecutionData;
-import software.wings.beans.jira.JiraTaskParameters;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -119,9 +118,9 @@ public class JiraResourceServiceImpl implements JiraResourceService {
   @Override
   public List<JiraUserData> searchUser(
       String connectorId, String accountId, String appId, long timeoutMillis, String userQuery, String offset) {
-    List<JiraUserData> userDataList = new ArrayList<>();
-    // TODO Mitisha: write delegate task and caller code here
-    return userDataList;
+    // List<JiraUserData> userDataList = new ArrayList<>();
+    //  TODO Mitisha: write delegate task and caller code here
+    return new ArrayList<>();
   }
 
   private JiraTaskNGResponse obtainJiraTaskNGResponse(
