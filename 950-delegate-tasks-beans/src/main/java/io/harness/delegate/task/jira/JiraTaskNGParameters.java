@@ -35,6 +35,7 @@ import lombok.experimental.FieldDefaults;
 public class JiraTaskNGParameters implements TaskParameters, ExecutionCapabilityDemander {
   JiraConnectorDTO jiraConnectorDTO;
   List<EncryptedDataDetail> encryptionDetails;
+  JiraUserSearchParams jiraUserSearchParams;
 
   JiraActionNG action;
   String projectKey;
@@ -51,12 +52,6 @@ public class JiraTaskNGParameters implements TaskParameters, ExecutionCapability
   String transitionToStatus; // required in a transition
   String transitionName; // optional - find a particular transition that goes to desired status
 
-  @Value
-  public class JiraUserSearchParams {
-    String accountId;
-    String userQuery;
-    String startAt;
-  }
   // Fields sent while creating/updating issue.
   Map<String, String> fields;
   List<String> delegateSelectors;

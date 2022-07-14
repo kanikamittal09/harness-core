@@ -112,9 +112,9 @@ public class JiraTaskNGHandler {
   }
 
   public JiraTaskNGResponse searchUser(JiraTaskNGParameters params) {
-    JiraTaskNGParameters.JiraUserSearchParams obj = params.new JiraUserSearchParams("", "", "");
     JiraClient jiraClient = getJiraClient(params);
-    JiraIssueNG issue = (JiraIssueNG) jiraClient.getUsers(obj.getAccountId(), obj.getUserQuery(), obj.getStartAt());
+    JiraIssueNG issue = (JiraIssueNG) jiraClient.getUsers(params.getJiraUserSearchParams().getAccountId(),
+        params.getJiraUserSearchParams().getUserQuery(), params.getJiraUserSearchParams().getStartAt());
     return JiraTaskNGResponse.builder().issue(issue).build();
   }
 
