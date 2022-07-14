@@ -461,6 +461,7 @@ import io.harness.delegate.task.http.HttpTaskParametersNg;
 import io.harness.delegate.task.jenkins.JenkinsBuildTaskNGResponse;
 import io.harness.delegate.task.jira.JiraTaskNGParameters;
 import io.harness.delegate.task.jira.JiraTaskNGResponse;
+import io.harness.delegate.task.jira.JiraUserSearchParams;
 import io.harness.delegate.task.k8s.AzureK8sInfraDelegateConfig;
 import io.harness.delegate.task.k8s.DeleteResourcesType;
 import io.harness.delegate.task.k8s.DirectK8sInfraDelegateConfig;
@@ -1608,5 +1609,6 @@ public class DelegateTasksBeansKryoRegister implements KryoRegistrar {
     kryo.register(GitApiMergePRTaskResponse.class, 55403);
     kryo.register(PdcWinRmInfraDelegateConfig.class, 55335);
     kryo.register(WinrmTaskParameters.class, 55336);
+    kryo.register(JiraUserSearchParams.class, 55337);
   }
 }
