@@ -11,7 +11,11 @@ import static io.harness.annotations.dev.HarnessTeam.CDC;
 
 import io.harness.annotations.dev.OwnedBy;
 import io.harness.beans.IdentifierRef;
-import io.harness.jira.*;
+import io.harness.jira.JiraIssueCreateMetadataNG;
+import io.harness.jira.JiraIssueUpdateMetadataNG;
+import io.harness.jira.JiraProjectBasicNG;
+import io.harness.jira.JiraStatusNG;
+import io.harness.jira.JiraUserData;
 
 import java.util.List;
 
