@@ -1,6 +1,6 @@
 site_name: Harness Core
 site_description: Harness portal code
-repo_url: https://github.com/kanikamittal09/harness-core
+repo_url: https://github.com/kanikamittal09/harness-core/tree/backstage_subdirectory
 edit_uri: edit/backstage_subdirectory/access-control/docs/
 nav:
   - 'Home': 'index.md'
