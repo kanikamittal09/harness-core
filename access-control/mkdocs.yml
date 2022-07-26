@@ -1,7 +1,5 @@
-site_name: 'harness-docs'
-
+site_name: Access Control
 nav:
-  - Home: index.md
-
+  - "Home": "index.md"
 plugins:
   - techdocs-core

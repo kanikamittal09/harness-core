@@ -1,0 +1,20 @@
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: Harness_portal
+  title: HarnessCore
+  description: Harness portal code
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: Access-control
+  title: AccessControl
+  description: About Access Control
+  annotations:
+    backstage.io/techdocs-ref: dir:access-control
+spec:
+  subcomponentOf: Harness_portal
