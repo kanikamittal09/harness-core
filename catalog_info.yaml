@@ -7,6 +7,9 @@ metadata:
   description: Harness portal code
   annotations:
     backstage.io/techdocs-ref: dir:.
+spec:
+  owner: Team-A
+  domain: core
 ---
 apiVersion: backstage.io/v1alpha1
 kind: Component
@@ -18,3 +21,5 @@ metadata:
     backstage.io/techdocs-ref: dir:access-control
 spec:
   subcomponentOf: Harness_portal
+  owner: Team-A
+  domain: core
