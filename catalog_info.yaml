@@ -20,6 +20,7 @@ metadata:
   annotations:
     backstage.io/techdocs-ref: dir:access-control
 spec:
+  type: library
   subcomponentOf: Harness_portal
   owner: Team-A
   domain: core
