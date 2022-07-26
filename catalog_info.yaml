@@ -20,7 +20,7 @@ metadata:
   title: AccessControl
   description: About Access Control
   annotations:
-    backstage.io/techdocs-ref: dir:access-control
+    backstage.io/techdocs-ref: dir:./access-control
 spec:
   type: service
   lifecycle: production
