@@ -21,6 +21,7 @@ metadata:
     backstage.io/techdocs-ref: dir:access-control
 spec:
   type: library
+  lifecycle: production
   subcomponentOf: Harness_portal
   owner: Team-A
   domain: core
