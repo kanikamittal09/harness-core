@@ -1,4 +1,4 @@
-site_name: Access Control
+site_name: AccessControl
 nav:
   - "Home": "index.md"
 plugins:
