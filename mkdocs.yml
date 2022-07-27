@@ -7,3 +7,4 @@ nav:
     - product : '!include ./product/mkdocs.yml'
 plugins:
   - monorepo
+  - techdocs-core
