@@ -1,5 +1,5 @@
 site_name: Harness-Core
-
+repo_url: https://github.com/kanikamittal09/harness-core
 nav:
   - Intro: 'index.md'
   - Services:
