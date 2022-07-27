@@ -1,8 +1,9 @@
-site_name: Harness Core
-site_description: Harness portal code
-repo_url: https://github.com/kanikamittal09/harness-core
-edit_uri: edit/backstage_subdirectory/access-control/docs/
+site_name: Harness-Core
+
 nav:
-  - 'Home': 'index.md'
+  - Intro: 'index.md'
+  - Services:
+    - access-control : '!include ./access-control/mkdocs.yml'
+    - product : '!include ./product/mkdocs.yml'
 plugins:
-  - techdocs-core
+  - monorepo

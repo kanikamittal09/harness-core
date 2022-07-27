@@ -1,0 +1,4 @@
+site_name: product
+
+nav:
+  - Home : "index.md"
