@@ -1,4 +1,4 @@
 site_name: Services/access-control
 
 nav:
-  - 'Home': 'index.md'
+  - Home: "index.md"

@@ -3,8 +3,8 @@ repo_url: https://github.com/kanikamittal09/harness-core
 nav:
   - Intro: 'index.md'
   - Services:
-    - access-control : '!include ./access-control/mkdocs.yml'
-    - product : '!include ./product/mkdocs.yml'
+    - access-control: '!include ./access-control/mkdocs.yml'
+    - product: '!include ./product/mkdocs.yml'
     
 plugins:
   - monorepo

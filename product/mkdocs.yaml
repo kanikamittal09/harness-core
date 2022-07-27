@@ -1,4 +1,4 @@
 site_name: Services/product
 
 nav:
-  - Home : "index.md"
+  - Home: "index.md"
