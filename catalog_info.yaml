@@ -1,14 +1,12 @@
----
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: Harness_portal
   title: HarnessCore
   description: Harness portal code
   annotations:
     backstage.io/techdocs-ref: dir:.
+  name: Harness_portal
 spec:
   owner: Team-A
-  domain: core
   type: service
   lifecycle: production
