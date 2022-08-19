@@ -293,7 +293,7 @@ public class DelegateAgentServiceImpl implements DelegateAgentService {
   private static final long DELEGATE_JRE_VERSION_TIMEOUT = TimeUnit.MINUTES.toMillis(10);
   private static final String DELEGATE_SEQUENCE_CONFIG_FILE = "./delegate_sequence_config";
   private static final int KEEP_ALIVE_INTERVAL = 23000;
-  private static final int CLIENT_TOOL_RETRIES = 10;
+  private static final int CLIENT_TOOL_RETRIES = 5;
   private static final int LOCAL_HEARTBEAT_INTERVAL = 10;
   private static final String TOKEN = "[TOKEN]";
   private static final String SEQ = "[SEQ]";
@@ -519,11 +519,19 @@ public class DelegateAgentServiceImpl implements DelegateAgentService {
         }
       }
 
-      if (!delegateConfiguration.isInstallClientToolsInBackground()) {
+      if (delegateConfiguration.isInstallClientToolsInBackground()) {
+        log.info("Client tools will be setup in the background, while delegate registers");
+        backgroundExecutor.submit(() -> {
+          int retries = CLIENT_TOOL_RETRIES;
+          while (!areClientToolsInstalled() && retries > 0) {
+            setupClientTools(delegateConfiguration);
+            sleep(ofSeconds(15L));
+            retries--;
+          }
+        });
+      } else {
         log.info("Client tools will be setup synchronously, before delegate registers");
         setupClientTools(delegateConfiguration);
-      } else {
-        log.info("Client tools will be setup in the background, while delegate registers");
       }
 
       long start = clock.millis();
@@ -679,17 +687,6 @@ public class DelegateAgentServiceImpl implements DelegateAgentService {
         startProfileCheck();
       }
 
-      if (!isClientToolsInstallationFinished()) {
-        backgroundExecutor.submit(() -> {
-          int retries = CLIENT_TOOL_RETRIES;
-          while (!isClientToolsInstallationFinished() && retries > 0) {
-            setupClientTools(delegateConfiguration);
-            sleep(ofSeconds(15L));
-            retries--;
-          }
-        });
-      }
-
       if (delegateLocalConfigService.isLocalConfigPresent()) {
         Map<String, String> localSecrets = delegateLocalConfigService.getLocalDelegateSecrets();
         if (isNotEmpty(localSecrets)) {
@@ -744,10 +741,6 @@ public class DelegateAgentServiceImpl implements DelegateAgentService {
       removeDelegateVersionFromCapsule();
       cleanupOldDelegateVersionFromBackup();
     }
-  }
-
-  public boolean isClientToolsInstallationFinished() {
-    return getDelegateConfiguration().isClientToolsDownloadDisabled() || areClientToolsInstalled();
   }
 
   private RequestBuilder prepareRequestBuilder() {
@@ -1643,7 +1636,16 @@ public class DelegateAgentServiceImpl implements DelegateAgentService {
 
   private String findExpectedWatcherVersion() {
     try {
-      // TODO - if multiVersion, get versions from manager endpoint
+      RestResponse<String> restResponse =
+          executeRestCall(delegateAgentManagerClient.getWatcherVersion(delegateConfiguration.getAccountId()));
+      if (restResponse != null) {
+        return restResponse.getResource();
+      }
+    } catch (Exception e) {
+      log.warn("Encountered error while fetching watcher version from manager ", e);
+    }
+    try {
+      // Try fetching watcher version from gcp
       String watcherMetadata = Http.getResponseStringFromUrl(delegateConfiguration.getWatcherCheckLocation(), 10, 10);
       return substringBefore(watcherMetadata, " ").trim();
     } catch (IOException e) {
@@ -1674,9 +1676,10 @@ public class DelegateAgentServiceImpl implements DelegateAgentService {
     String receivedId = delegateHeartbeatResponse.getDelegateId();
     if (delegateId.equals(receivedId)) {
       final long now = clock.millis();
-      if ((now - lastHeartbeatSentAt.get()) > TimeUnit.MINUTES.toMillis(3)) {
+      final long diff = now - lastHeartbeatSentAt.longValue();
+      if (diff > TimeUnit.MINUTES.toMillis(3)) {
         log.warn(
-            "Delegate {} received heartbeat response {} after sending. {} since last recorded heartbeat response. Harness sent response at {} before",
+            "Delegate {} received heartbeat response {} after sending. {} since last recorded heartbeat response. Harness sent response {} back",
             receivedId, getDurationString(lastHeartbeatSentAt.get(), now),
             getDurationString(lastHeartbeatReceivedAt.get(), now),
             getDurationString(delegateHeartbeatResponse.getResponseSentAt(), now));

@@ -10,7 +10,7 @@ package io.harness.cdng.azure.webapp;
 import static io.harness.annotations.dev.HarnessTeam.CDP;
 import static io.harness.cdng.stepsdependency.constants.OutcomeExpressionConstants.APPLICATION_SETTINGS;
 import static io.harness.cdng.stepsdependency.constants.OutcomeExpressionConstants.CONNECTION_STRINGS;
-import static io.harness.cdng.stepsdependency.constants.OutcomeExpressionConstants.STARTUP_SCRIPT;
+import static io.harness.cdng.stepsdependency.constants.OutcomeExpressionConstants.STARTUP_COMMAND;
 import static io.harness.data.structure.CollectionUtils.emptyIfNull;
 import static io.harness.data.structure.EmptyPredicate.isNotEmpty;
 import static io.harness.delegate.beans.connector.docker.DockerAuthType.ANONYMOUS;
@@ -19,6 +19,7 @@ import static io.harness.delegate.task.artifacts.ArtifactSourceConstants.ARTIFAC
 import static io.harness.delegate.task.artifacts.ArtifactSourceConstants.DOCKER_REGISTRY_NAME;
 import static io.harness.delegate.task.artifacts.ArtifactSourceConstants.ECR_NAME;
 import static io.harness.delegate.task.artifacts.ArtifactSourceConstants.GCR_NAME;
+import static io.harness.delegate.task.artifacts.ArtifactSourceConstants.NEXUS3_REGISTRY_NAME;
 
 import static java.lang.String.format;
 
@@ -32,10 +33,13 @@ import io.harness.cdng.artifact.outcome.AcrArtifactOutcome;
 import io.harness.cdng.artifact.outcome.ArtifactOutcome;
 import io.harness.cdng.artifact.outcome.ArtifactoryArtifactOutcome;
 import io.harness.cdng.artifact.outcome.DockerArtifactOutcome;
+import io.harness.cdng.artifact.outcome.EcrArtifactOutcome;
+import io.harness.cdng.artifact.outcome.GcrArtifactOutcome;
+import io.harness.cdng.artifact.outcome.NexusArtifactOutcome;
 import io.harness.cdng.azure.AzureHelperService;
 import io.harness.cdng.azure.config.ApplicationSettingsOutcome;
 import io.harness.cdng.azure.config.ConnectionStringsOutcome;
-import io.harness.cdng.azure.config.StartupScriptOutcome;
+import io.harness.cdng.azure.config.StartupCommandOutcome;
 import io.harness.cdng.azure.webapp.beans.AzureWebAppPreDeploymentDataOutput;
 import io.harness.cdng.expressions.CDExpressionResolver;
 import io.harness.cdng.infra.beans.AzureWebAppInfrastructureOutcome;
@@ -125,16 +129,16 @@ public class AzureWebAppStepHelper {
 
   public Map<String, StoreConfig> fetchWebAppConfig(Ambiance ambiance) {
     Map<String, StoreConfig> settingsConfig = new HashMap<>();
-    OptionalOutcome startupScriptOutcome =
-        outcomeService.resolveOptional(ambiance, RefObjectUtils.getOutcomeRefObject(STARTUP_SCRIPT));
+    OptionalOutcome startupCommandOutcome =
+        outcomeService.resolveOptional(ambiance, RefObjectUtils.getOutcomeRefObject(STARTUP_COMMAND));
     OptionalOutcome applicationSettingsOutcome =
         outcomeService.resolveOptional(ambiance, RefObjectUtils.getOutcomeRefObject(APPLICATION_SETTINGS));
     OptionalOutcome connectionStringsOutcome =
         outcomeService.resolveOptional(ambiance, RefObjectUtils.getOutcomeRefObject(CONNECTION_STRINGS));
 
-    if (startupScriptOutcome.isFound()) {
-      StartupScriptOutcome startupScript = (StartupScriptOutcome) startupScriptOutcome.getOutcome();
-      settingsConfig.put(STARTUP_SCRIPT, startupScript.getStore());
+    if (startupCommandOutcome.isFound()) {
+      StartupCommandOutcome startupCommand = (StartupCommandOutcome) startupCommandOutcome.getOutcome();
+      settingsConfig.put(STARTUP_COMMAND, startupCommand.getStore());
     }
 
     if (applicationSettingsOutcome.isFound()) {
@@ -235,6 +239,7 @@ public class AzureWebAppStepHelper {
       case ECR_NAME:
       case GCR_NAME:
       case ACR_NAME:
+      case NEXUS3_REGISTRY_NAME:
       case ARTIFACTORY_REGISTRY_NAME:
         return getAzureContainerArtifactConfig(ambiance, artifactOutcome);
 
@@ -292,12 +297,37 @@ public class AzureWebAppStepHelper {
         artifactConfigBuilder.tag(acrArtifactOutcome.getTag());
         artifactConfigBuilder.registryHostname(acrArtifactOutcome.getRegistry());
         break;
+      case ECR_NAME:
+        EcrArtifactOutcome ecrArtifactOutcome = (EcrArtifactOutcome) artifactOutcome;
+        connectorInfo = cdStepHelper.getConnector(ecrArtifactOutcome.getConnectorRef(), ambiance);
+        artifactConfigBuilder.registryType(AzureRegistryType.ECR);
+        artifactConfigBuilder.image(ecrArtifactOutcome.getImage());
+        artifactConfigBuilder.tag(ecrArtifactOutcome.getTag());
+        artifactConfigBuilder.region(ecrArtifactOutcome.getRegion());
+        break;
+      case GCR_NAME:
+        GcrArtifactOutcome gcrArtifactOutcome = (GcrArtifactOutcome) artifactOutcome;
+        connectorInfo = cdStepHelper.getConnector(gcrArtifactOutcome.getConnectorRef(), ambiance);
+        artifactConfigBuilder.registryType(AzureRegistryType.GCR);
+        artifactConfigBuilder.image(gcrArtifactOutcome.getImage());
+        artifactConfigBuilder.tag(gcrArtifactOutcome.getTag());
+        artifactConfigBuilder.registryHostname(gcrArtifactOutcome.getRegistryHostname());
+        break;
+      case NEXUS3_REGISTRY_NAME:
+        NexusArtifactOutcome nexusArtifactOutcome = (NexusArtifactOutcome) artifactOutcome;
+        connectorInfo = cdStepHelper.getConnector(nexusArtifactOutcome.getConnectorRef(), ambiance);
+        artifactConfigBuilder.registryType(AzureRegistryType.NEXUS_PRIVATE_REGISTRY);
+        artifactConfigBuilder.image(nexusArtifactOutcome.getImage());
+        artifactConfigBuilder.tag(nexusArtifactOutcome.getTag());
+        artifactConfigBuilder.registryHostname(nexusArtifactOutcome.getRegistryHostname());
+        break;
       case ARTIFACTORY_REGISTRY_NAME:
         ArtifactoryArtifactOutcome artifactoryArtifactOutcome = (ArtifactoryArtifactOutcome) artifactOutcome;
         connectorInfo = cdStepHelper.getConnector(artifactoryArtifactOutcome.getConnectorRef(), ambiance);
         artifactConfigBuilder.registryType(AzureRegistryType.ARTIFACTORY_PRIVATE_REGISTRY);
         artifactConfigBuilder.image(artifactoryArtifactOutcome.getImage());
         artifactConfigBuilder.tag(artifactoryArtifactOutcome.getTag());
+        artifactConfigBuilder.registryHostname(artifactoryArtifactOutcome.getRegistryHostname());
         break;
       default:
         throw new InvalidArgumentsException(
