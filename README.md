@@ -2,7 +2,7 @@ This repo contains code used in the [Harness CD Community Edition](https://githu
 
 harness-core Project Dev environment setup instructions
 ==================================================
-## On MacOS
+## On Mac OS
 
 #### Please go through the following wiki page to setup local environment to build harness-core with bazel. Minimal and required steps are written in below wiki page.
 #### You can ignore steps 1 to 3 in "Prerequisities" section and can ignore steps 1 to 3 in "Build" section after following the below wiki.
