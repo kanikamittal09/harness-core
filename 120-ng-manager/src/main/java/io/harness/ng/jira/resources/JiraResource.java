@@ -8,6 +8,7 @@
 package io.harness.ng.jira.resources;
 
 import static io.harness.annotations.dev.HarnessTeam.CDC;
+import static io.harness.delegate.beans.TaskData.DEFAULT_SYNC_CALL_TIMEOUT;
 
 import io.harness.NGCommonEntityConstants;
 import io.harness.annotations.dev.OwnedBy;
@@ -18,6 +19,7 @@ import io.harness.jira.JiraIssueCreateMetadataNG;
 import io.harness.jira.JiraIssueUpdateMetadataNG;
 import io.harness.jira.JiraProjectBasicNG;
 import io.harness.jira.JiraStatusNG;
+import io.harness.jira.JiraUserData;
 import io.harness.ng.core.dto.ErrorDTO;
 import io.harness.ng.core.dto.FailureDTO;
 import io.harness.ng.core.dto.ResponseDTO;
@@ -34,10 +36,12 @@ import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import org.hibernate.validator.constraints.NotEmpty;
 
 @OwnedBy(CDC)
 @Api("jira")
@@ -108,6 +112,16 @@ public class JiraResource {
     JiraIssueCreateMetadataNG createMetadata = jiraResourceService.getIssueCreateMetadata(
         connectorRef, orgId, projectId, projectKey, issueType, expand, fetchStatus, ignoreComment);
     return ResponseDTO.newResponse(createMetadata);
+  }
+
+  @GET
+  @Path("{connectorId}/searchUser")
+  @ApiOperation(hidden = true, value = "Get jira usernames for the jira connector", nickname = "jiraUserSearch")
+  public ResponseDTO<List<JiraUserData>> getUserSearch(@QueryParam("appId") String appId,
+      @QueryParam("accountId") @NotEmpty String accountId, @PathParam("connectorId") String connectorId,
+      @QueryParam("user") String userQuery, @QueryParam("offset") String offset) {
+    return ResponseDTO.newResponse(
+        jiraResourceService.searchUser(connectorId, accountId, appId, DEFAULT_SYNC_CALL_TIMEOUT, userQuery, offset));
   }
 
   @GET

@@ -34,6 +34,7 @@ import io.harness.jira.JiraIssueCreateMetadataNG;
 import io.harness.jira.JiraIssueUpdateMetadataNG;
 import io.harness.jira.JiraProjectBasicNG;
 import io.harness.jira.JiraStatusNG;
+import io.harness.jira.JiraUserData;
 import io.harness.ng.core.BaseNGAccess;
 import io.harness.ng.core.NGAccess;
 import io.harness.secretmanagerclient.services.api.SecretManagerClientService;
@@ -44,6 +45,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -111,6 +113,14 @@ public class JiraResourceServiceImpl implements JiraResourceService {
         JiraTaskNGParameters.builder().action(JiraActionNG.GET_ISSUE_UPDATE_METADATA).issueKey(issueKey);
     JiraTaskNGResponse jiraTaskResponse = obtainJiraTaskNGResponse(jiraConnectorRef, orgId, projectId, paramsBuilder);
     return jiraTaskResponse.getIssueUpdateMetadata();
+  }
+
+  @Override
+  public List<JiraUserData> searchUser(
+      String connectorId, String accountId, String appId, long timeoutMillis, String userQuery, String offset) {
+    // List<JiraUserData> userDataList = new ArrayList<>();
+    //  TODO Mitisha: write delegate task and caller code here
+    return new ArrayList<>();
   }
 
   private JiraTaskNGResponse obtainJiraTaskNGResponse(
